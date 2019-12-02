@@ -6,7 +6,6 @@
 
       <div class="overflow-x-hidden w-2/3">
         <router-view />
-        <p v-for="i in 100" :key="i">Gaaaa</p>
       </div>
     </div>
   </div>
