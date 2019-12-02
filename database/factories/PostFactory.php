@@ -9,6 +9,7 @@ use Faker\Generator as Faker;
 $factory->define(Post::class, function (Faker $faker) {
     return [
         'user_id' => factory(User::class),
-        'body' => $faker->sentence
+        'body' => $faker->sentence,
+        'image' => $faker->imageUrl(640, 480, 'nature')
     ];
 });

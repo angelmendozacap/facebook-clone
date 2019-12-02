@@ -24,7 +24,7 @@ class RetrievePostsTest extends TestCase
         ]);
 
         $response = $this->get('/api/posts');
-
+        dd($posts->last()->image);
         $response->assertStatus(Response::HTTP_OK)
             ->assertJson([
                 'data' => [
@@ -34,6 +34,8 @@ class RetrievePostsTest extends TestCase
                             'post_id' => $posts->last()->id,
                             'attributes' => [
                                 'body' => $posts->last()->body,
+                                'posted_at' => $posts->last()->created_at->diffForHumans(),
+                                'image' => $posts->last()->image
                             ]
                         ]
                     ],
@@ -43,6 +45,8 @@ class RetrievePostsTest extends TestCase
                             'post_id' => $posts->first()->id,
                             'attributes' => [
                                 'body' => $posts->first()->body,
+                                'posted_at' => $posts->first()->created_at->diffForHumans(),
+                                'image' => $posts->first()->image
                             ]
                         ]
                     ]

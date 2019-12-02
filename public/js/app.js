@@ -20894,9 +20894,12 @@ var render = function() {
               }
             }),
             _vm._v(" "),
-            _c("div", { staticClass: "text-sm text-gray-600" }, [
-              _vm._v("12 mins")
-            ])
+            _c("div", {
+              staticClass: "text-sm text-gray-600",
+              domProps: {
+                textContent: _vm._s(_vm.post.data.attributes.posted_at)
+              }
+            })
           ])
         ]),
         _vm._v(" "),
@@ -20907,7 +20910,14 @@ var render = function() {
         ])
       ]),
       _vm._v(" "),
-      _vm._m(1),
+      _vm.post.data.attributes.image
+        ? _c("div", { staticClass: "w-full" }, [
+            _c("img", {
+              staticClass: "w-full",
+              attrs: { src: _vm.post.data.attributes.image, alt: "post image" }
+            })
+          ])
+        : _vm._e(),
       _vm._v(" "),
       _c(
         "div",
@@ -20938,7 +20948,7 @@ var render = function() {
             ])
           ]),
           _vm._v(" "),
-          _vm._m(2)
+          _vm._m(1)
         ]
       ),
       _vm._v(" "),
@@ -21019,21 +21029,6 @@ var staticRenderFns = [
       _c("img", {
         staticClass: "w-8 h-8 object-cover rounded-full",
         attrs: { src: "https://picsum.photos/300/300", alt: "Profile" }
-      })
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "w-full" }, [
-      _c("img", {
-        staticClass: "w-full",
-        attrs: {
-          src:
-            "https://images.unsplash.com/photo-1469474968028-56623f02e42e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=753&q=80",
-          alt: "post image"
-        }
       })
     ])
   },

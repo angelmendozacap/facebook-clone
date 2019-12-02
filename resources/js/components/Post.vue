@@ -11,7 +11,7 @@
         </div>
         <div class="ml-6">
           <h3 class="text-sm font-bold" v-text="post.data.attributes.posted_by.data.attributes.name"></h3>
-          <div class="text-sm text-gray-600">12 mins</div>
+          <div class="text-sm text-gray-600" v-text="post.data.attributes.posted_at"></div>
         </div>
       </div>
       <div class="mt-4">
@@ -19,9 +19,9 @@
       </div>
     </div>
 
-    <div class="w-full">
+    <div class="w-full" v-if="post.data.attributes.image">
       <img
-        src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=753&q=80"
+        :src="post.data.attributes.image"
         alt="post image"
         class="w-full"
       />
