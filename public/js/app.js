@@ -2122,6 +2122,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -2132,7 +2133,8 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
-      posts: []
+      posts: [],
+      loading: true
     };
   },
   methods: {
@@ -2149,20 +2151,21 @@ __webpack_require__.r(__webpack_exports__);
             case 3:
               res = _context.sent;
               this.posts = res.data;
-              _context.next = 10;
+              this.loading = false;
+              _context.next = 11;
               break;
 
-            case 7:
-              _context.prev = 7;
+            case 8:
+              _context.prev = 8;
               _context.t0 = _context["catch"](0);
               console.log('Unable to fetch posts');
 
-            case 10:
+            case 11:
             case "end":
               return _context.stop();
           }
         }
-      }, null, this, [[0, 7]]);
+      }, null, this, [[0, 8]]);
     }
   },
   mounted: function mounted() {
@@ -21105,9 +21108,11 @@ var render = function() {
     [
       _c("NewPost"),
       _vm._v(" "),
-      _vm._l(_vm.posts.data, function(post) {
-        return _c("Post", { key: post.data.post_id, attrs: { post: post } })
-      })
+      _vm.loading
+        ? _c("span", { staticClass: "mt-6" }, [_vm._v("Loading...")])
+        : _vm._l(_vm.posts.data, function(post) {
+            return _c("Post", { key: post.data.post_id, attrs: { post: post } })
+          })
     ],
     2
   )
