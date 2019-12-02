@@ -10,12 +10,12 @@
           />
         </div>
         <div class="ml-6">
-          <h3 class="text-sm font-bold">Name User</h3>
+          <h3 class="text-sm font-bold" v-text="post.data.attributes.posted_by.data.attributes.name"></h3>
           <div class="text-sm text-gray-600">12 mins</div>
         </div>
       </div>
       <div class="mt-4">
-        <p>Not having fun at all</p>
+        <p v-text="post.data.attributes.body"></p>
       </div>
     </div>
 
@@ -65,6 +65,7 @@
 
 <script>
 export default {
-  name: "Post"
+  name: "Post",
+  props: [ 'post' ]
 };
 </script>
