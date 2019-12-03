@@ -24,7 +24,7 @@ class RetrievePostsTest extends TestCase
         ]);
 
         $response = $this->get('/api/posts');
-        dd($posts->last()->image);
+
         $response->assertStatus(Response::HTTP_OK)
             ->assertJson([
                 'data' => [
