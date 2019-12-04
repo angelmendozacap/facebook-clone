@@ -1886,6 +1886,9 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+
 //
 //
 //
@@ -1946,7 +1949,45 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
-  name: "Nav"
+  name: "Nav",
+  data: function data() {
+    return {
+      user: {}
+    };
+  },
+  methods: {
+    getAuthenticatedUser: function getAuthenticatedUser() {
+      var res;
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.async(function getAuthenticatedUser$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              _context.prev = 0;
+              _context.next = 3;
+              return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.awrap(axios.get('/api/auth-user'));
+
+            case 3:
+              res = _context.sent;
+              this.user = res.data;
+              _context.next = 10;
+              break;
+
+            case 7:
+              _context.prev = 7;
+              _context.t0 = _context["catch"](0);
+              console.log('Unable to fetch auth user');
+
+            case 10:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, null, this, [[0, 7]]);
+    }
+  },
+  mounted: function mounted() {
+    this.getAuthenticatedUser();
+  }
 });
 
 /***/ }),
@@ -20832,7 +20873,12 @@ var render = function() {
                 {
                   staticClass:
                     "block border-b-2 border-white px-6 h-full flex items-center",
-                  attrs: { to: { name: "home" } }
+                  attrs: {
+                    to: {
+                      name: "user.show",
+                      params: { userId: _vm.user.data.user_id }
+                    }
+                  }
                 },
                 [
                   _c("img", {
