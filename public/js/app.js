@@ -2186,6 +2186,7 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _components_Post__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../components/Post */ "./resources/js/components/Post.vue");
 
 //
 //
@@ -2195,12 +2196,46 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 /* harmony default export */ __webpack_exports__["default"] = ({
-  name: 'Show',
+  name: "Show",
+  components: {
+    Post: _components_Post__WEBPACK_IMPORTED_MODULE_1__["default"]
+  },
   data: function data() {
     return {
       user: {},
-      loading: true
+      posts: [],
+      userLoading: true,
+      postLoading: true
     };
   },
   methods: {
@@ -2223,10 +2258,10 @@ __webpack_require__.r(__webpack_exports__);
             case 7:
               _context.prev = 7;
               _context.t0 = _context["catch"](0);
-              console.log('Uanble to fetch the user from the server');
+              console.log("Unable to fetch the user from the server");
 
             case 10:
-              this.loading = false;
+              this.userLoading = false;
 
             case 11:
             case "end":
@@ -2234,10 +2269,42 @@ __webpack_require__.r(__webpack_exports__);
           }
         }
       }, null, this, [[0, 7]]);
+    },
+    getPosts: function getPosts() {
+      var res;
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.async(function getPosts$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              _context2.prev = 0;
+              _context2.next = 3;
+              return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.awrap(axios.get("/api/users/".concat(this.$route.params.userId, "/posts")));
+
+            case 3:
+              res = _context2.sent;
+              this.posts = res.data;
+              _context2.next = 10;
+              break;
+
+            case 7:
+              _context2.prev = 7;
+              _context2.t0 = _context2["catch"](0);
+              console.log("Unable to fetch posts");
+
+            case 10:
+              this.postLoading = false;
+
+            case 11:
+            case "end":
+              return _context2.stop();
+          }
+        }
+      }, null, this, [[0, 7]]);
     }
   },
   mounted: function mounted() {
     this.getUser();
+    this.getPosts();
   }
 });
 
@@ -21207,23 +21274,85 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
+  return _c("div", [
+    _vm.userLoading
+      ? _c("span", { staticClass: "mt-6" }, [_vm._v("Loading Profile...")])
+      : _c("header", { staticClass: "relative mb-8" }, [
+          _vm._m(0),
+          _vm._v(" "),
+          _c(
+            "div",
+            {
+              staticClass:
+                "absolute flex items-center bottom-0 left-0 -mb-8 ml-12 z-20"
+            },
+            [
+              _vm._m(1),
+              _vm._v(" "),
+              _c("p", {
+                staticClass: "text-2xl text-gray-100 ml-4",
+                domProps: { textContent: _vm._s(_vm.user.data.attributes.name) }
+              })
+            ]
+          )
+        ]),
+    _vm._v(" "),
+    _vm.postLoading
+      ? _c("span", { staticClass: "mt-6" }, [_vm._v("Loading Posts...")])
+      : _c(
+          "main",
+          { staticClass: "flex flex-col items-center" },
+          [
+            !_vm.postLoading && !_vm.posts.data.length
+              ? _c("p", { staticClass: "bg-white px-4 py-2 rounded" }, [
+                  _vm._v("\n      No Posts Found.\n      "),
+                  _c(
+                    "a",
+                    {
+                      staticClass: "text-blue-500 hover:text-blue-600",
+                      attrs: { href: "#" }
+                    },
+                    [_vm._v("Get Started...")]
+                  )
+                ])
+              : _vm._e(),
+            _vm._v(" "),
+            _vm._l(_vm.posts.data, function(post) {
+              return _c("Post", {
+                key: post.data.post_id,
+                attrs: { post: post }
+              })
+            })
+          ],
+          2
+        )
+  ])
 }
 var staticRenderFns = [
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", [
-      _c("div", { staticClass: "w-100 h-64 overflow-hidden" }, [
-        _c("img", {
-          staticClass: "object-cover w-full",
-          attrs: {
-            src: "http://lorempixel.com/960/720/nature/",
-            alt: "user background image"
-          }
-        })
-      ])
+    return _c("div", { staticClass: "w-100 h-64 overflow-hidden z-10" }, [
+      _c("img", {
+        staticClass: "object-cover w-full",
+        attrs: {
+          src: "http://lorempixel.com/960/720/nature/",
+          alt: "user background image"
+        }
+      })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "w-32" }, [
+      _c("img", {
+        staticClass:
+          "w-32 h-32 object-cover border-4 border-gray-200 rounded-full shadow-lg",
+        attrs: { src: "https://picsum.photos/300/300", alt: "Profile" }
+      })
     ])
   }
 ]
