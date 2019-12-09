@@ -27,7 +27,19 @@ export default {
   methods: {
     ...mapActions('User', [
       'fetchAuthUser'
+    ]),
+
+    ...mapActions('Title', [
+      'setPageTitle'
     ])
+  },
+  watch: {
+    $route(to, from) {
+      this.setPageTitle(to.meta.title)
+    }
+  },
+  created() {
+    this.setPageTitle(this.$route.meta.title)
   },
   mounted() {
     this.fetchAuthUser()

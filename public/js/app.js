@@ -1881,7 +1881,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     Nav: _Nav__WEBPACK_IMPORTED_MODULE_1__["default"],
     Sidebar: _Sidebar__WEBPACK_IMPORTED_MODULE_2__["default"]
   },
-  methods: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])('User', ['fetchAuthUser'])),
+  methods: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])('User', ['fetchAuthUser']), {}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])('Title', ['setPageTitle'])),
+  watch: {
+    $route: function $route(to, from) {
+      this.setPageTitle(to.meta.title);
+    }
+  },
+  created: function created() {
+    this.setPageTitle(this.$route.meta.title);
+  },
   mounted: function mounted() {
     this.fetchAuthUser();
   }
@@ -37921,11 +37929,17 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vue_router__WEBPACK_IMPORTED_MODU
 var routes = [{
   path: '/',
   name: 'home',
-  component: _views_NewsFeed__WEBPACK_IMPORTED_MODULE_2__["default"]
+  component: _views_NewsFeed__WEBPACK_IMPORTED_MODULE_2__["default"],
+  meta: {
+    title: 'News Feed'
+  }
 }, {
   path: '/users/:userId',
   name: 'user.show',
-  component: _views_Users_Show__WEBPACK_IMPORTED_MODULE_3__["default"]
+  component: _views_Users_Show__WEBPACK_IMPORTED_MODULE_3__["default"],
+  meta: {
+    title: 'Profile'
+  }
 }];
 /* harmony default export */ __webpack_exports__["default"] = (new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
   mode: 'history',
@@ -37947,15 +37961,57 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
 /* harmony import */ var _modules_user__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./modules/user */ "./resources/js/store/modules/user.js");
+/* harmony import */ var _modules_title__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./modules/title */ "./resources/js/store/modules/title.js");
+
 
 
 
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__["default"]);
 /* harmony default export */ __webpack_exports__["default"] = (new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
   modules: {
-    User: _modules_user__WEBPACK_IMPORTED_MODULE_2__["default"]
+    User: _modules_user__WEBPACK_IMPORTED_MODULE_2__["default"],
+    Title: _modules_title__WEBPACK_IMPORTED_MODULE_3__["default"]
   }
 }));
+
+/***/ }),
+
+/***/ "./resources/js/store/modules/title.js":
+/*!*********************************************!*\
+  !*** ./resources/js/store/modules/title.js ***!
+  \*********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+var state = {
+  title: 'Welcome'
+};
+var getters = {
+  pageTitle: function pageTitle(state) {
+    return state.title;
+  }
+};
+var mutations = {
+  SET_TITLE: function SET_TITLE(state, title) {
+    state.title = "".concat(title, " | Facebook");
+    document.title = state.title;
+  }
+};
+var actions = {
+  setPageTitle: function setPageTitle(_ref, title) {
+    var commit = _ref.commit;
+    commit('SET_TITLE', title);
+  }
+};
+/* harmony default export */ __webpack_exports__["default"] = ({
+  namespaced: true,
+  state: state,
+  getters: getters,
+  mutations: mutations,
+  actions: actions
+});
 
 /***/ }),
 
