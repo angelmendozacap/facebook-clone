@@ -13,6 +13,8 @@
 
 <script>
 
+import { mapActions } from 'vuex'
+
 import Nav from './Nav'
 import Sidebar from './Sidebar'
 
@@ -21,6 +23,14 @@ export default {
   components: {
     Nav,
     Sidebar
+  },
+  methods: {
+    ...mapActions('User', [
+      'fetchAuthUser'
+    ])
+  },
+  mounted() {
+    this.fetchAuthUser()
   }
 }
 </script>

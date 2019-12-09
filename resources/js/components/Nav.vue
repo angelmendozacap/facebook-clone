@@ -39,7 +39,7 @@
         </li>
 
         <li class="h-full">
-          <router-link :to="{name:'user.show', params: { userId: user.data.user_id }}" class="block border-b-2 border-white px-6 h-full flex items-center">
+          <router-link :to="{name:'user.show', params: { userId: authUser.data.user_id }}" class="block border-b-2 border-white px-6 h-full flex items-center">
             <img src="https://picsum.photos/300/300" class="w-8 h-8 object-cover rounded-full" alt="Profile">
           </router-link>
         </li>
@@ -58,29 +58,15 @@
 </template>
 
 <script>
+
+import { mapGetters } from 'vuex'
+
 export default {
   name: "Nav",
-
-  data() {
-    return {
-      user: {}
-    }
-  },
-
-  methods: {
-    async getAuthenticatedUser() {
-      try {
-        const res = await axios.get('/api/auth-user')
-        this.user = res.data
-
-      } catch (err) {
-        console.log('Unable to fetch auth user')
-      }
-    }
-  },
-
-  mounted() {
-    this.getAuthenticatedUser()
+  computed: {
+    ...mapGetters('User', [
+      'authUser'
+    ])
   }
 };
 </script>
