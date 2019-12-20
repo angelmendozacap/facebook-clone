@@ -6,6 +6,7 @@ use App\User;
 use App\Friend;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class FriendsTest extends TestCase
@@ -22,7 +23,7 @@ class FriendsTest extends TestCase
 
         $response = $this->post('/api/friend-request', [
             'friend_id' => $anotherUser->id,
-        ])->assertStatus(200);
+        ])->assertStatus(Response::HTTP_OK);
 
         $friendRequest = Friend::first();
 
@@ -43,5 +44,27 @@ class FriendsTest extends TestCase
             ]
         ]);
 
+    }
+
+    /** @test */
+    public function only_valid_users_can_be_friend_requested()
+    {
+        // $this->withoutExceptionHandling();
+
+        $this->actingAs($user = factory(User::class)->create(), 'api');
+
+        $response = $this->post('/api/friend-request', [
+            'friend_id' => 123,
+        ])->assertStatus(Response::HTTP_NOT_FOUND);
+
+        $this->assertNull(Friend::first());
+
+        $response->assertJson([
+            'errors' => [
+                'status' => Response::HTTP_NOT_FOUND,
+                'title' => 'User Not Found',
+                'detail' => 'Unable to locate the user with the given information.',
+            ]
+        ]);
     }
 }
