@@ -4,9 +4,15 @@ use Illuminate\Http\Request;
 
 Route::middleware('auth:api')->group(function () {
 
-    Route::get('/user', function (Request $request) {
-        return $request->user();
-    });
+    Route::get('/auth-user', 'AuthUserController@show');
 
-    Route::post('/posts', 'PostController@store');
+    Route::apiResources([
+        '/posts' => 'PostController',
+        '/users' => 'UserController',
+        '/users/{user}/posts' => 'UserPostController',
+        '/friend-request' => 'FriendRequestController',
+        '/friend-request-response' => 'FriendRequestResponseController'
+
+    ]);
+
 });
