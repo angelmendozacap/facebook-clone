@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\User;
 use App\Friend;
+use Carbon\Carbon;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Symfony\Component\HttpFoundation\Response;
@@ -66,5 +67,45 @@ class FriendsTest extends TestCase
                 'detail' => 'Unable to locate the user with the given information.',
             ]
         ]);
+    }
+
+    /** @test */
+    public function friend_requests_can_be_accepted()
+    {
+        $this->withoutExceptionHandling();
+
+        $this->actingAs($user = factory(User::class)->create(), 'api');
+        $anotherUser = factory(User::class)->create();
+
+        $response = $this->post('/api/friend-request', [
+            'friend_id' => $anotherUser->id,
+        ])->assertStatus(Response::HTTP_OK);
+
+        $response = $this->actingAs($anotherUser, 'api')
+            ->post('/api/friend-request-response', [
+                'user_id' => $user->id,
+                'status' => 1,
+            ])->assertStatus(Response::HTTP_OK);
+
+        $friendRequest = Friend::first();
+
+        $this->assertNotNull($friendRequest->confirmed_at);
+        $this->assertInstanceOf(Carbon::class, $friendRequest->confirmed_at);
+        $this->assertEquals(now()->startOfSecond(), $friendRequest->confirmed_at);
+        $this->assertEquals(1, $friendRequest->status);
+
+        $response->assertJson([
+            'data' => [
+                'type' => 'friend-request',
+                'friend_request_id' => $friendRequest->id,
+                'attributes' => [
+                    'confirmed_at' => $friendRequest->confirmed_at->diffForHumans()
+                ]
+            ],
+            'links' => [
+                'self' => url('/users/'.$anotherUser->id)
+            ]
+        ]);
+
     }
 }
