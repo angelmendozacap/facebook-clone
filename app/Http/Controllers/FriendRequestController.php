@@ -6,6 +6,9 @@ use App\User;
 use App\Friend;
 use Illuminate\Http\Request;
 use App\Exceptions\UserNotFoundException;
+use App\Exceptions\ValidationErrorException;
+use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpFoundation\Response;
 use App\Http\Resources\Friend as FriendResource;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
@@ -14,7 +17,7 @@ class FriendRequestController extends Controller
     public function store()
     {
         $data = request()->validate([
-            'friend_id' => ''
+            'friend_id' => 'required'
         ]);
 
         try {
