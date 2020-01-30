@@ -5,7 +5,7 @@
       <Sidebar />
 
       <div class="overflow-x-hidden w-2/3">
-        <router-view />
+        <router-view :key="$route.fullPath" />
       </div>
     </div>
   </div>

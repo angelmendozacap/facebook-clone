@@ -1,7 +1,6 @@
 <template>
   <div>
-    <span v-if="userLoading" class="mt-6">Loading Profile...</span>
-    <header v-else class="relative mb-8">
+    <header class="relative mb-8">
       <div class="w-100 h-64 overflow-hidden z-10">
         <img
           src="http://lorempixel.com/960/720/nature/"
@@ -18,7 +17,11 @@
             alt="Profile"
           />
         </div>
-        <p class="text-2xl text-gray-100 ml-4" v-text="user.data.attributes.name"></p>
+        <p class="text-2xl text-gray-100 ml-4" v-text="userProfile.data.attributes.name"></p>
+      </div>
+
+      <div class="absolute flex items-center bottom-0 right-0 mb-4 mr-12 z-20">
+        <button class="py-1 px-3 bg-gray-400 rounded">Add Friend</button>
       </div>
     </header>
 
@@ -36,6 +39,7 @@
 
 <script>
 import Post from "../../components/Post"
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: "Show",
@@ -46,24 +50,13 @@ export default {
 
   data() {
     return {
-      user: {},
       posts: [],
-      userLoading: true,
       postLoading: true
     };
   },
 
   methods: {
-    async getUser() {
-      try {
-        const res = await axios.get(`/api/users/${this.$route.params.userId}`);
-        this.user = res.data;
-      } catch (err) {
-        console.log("Unable to fetch the user from the server");
-      }
-
-      this.userLoading = false;
-    },
+    ...mapActions('Profile', ['fetchUser']),
     async getPosts() {
       try {
         const res = await axios.get(
@@ -78,8 +71,13 @@ export default {
     }
   },
 
+  computed: {
+    ...mapGetters('Profile', ['userProfile']),
+  },
+
   mounted() {
-    this.getUser();
+    const userId = this.$route.params.userId
+    this.fetchUser(userId);
     this.getPosts();
   }
 }
