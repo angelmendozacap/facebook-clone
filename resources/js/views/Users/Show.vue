@@ -21,7 +21,12 @@
       </div>
 
       <div class="absolute flex items-center bottom-0 right-0 mb-4 mr-12 z-20">
-        <button class="py-1 px-3 bg-gray-400 rounded">Add Friend</button>
+        <button
+          v-if="friendButtonText"
+          class="py-1 px-3 bg-gray-400 rounded"
+          @click="sendFriendRequest($route.params.userId)"
+          v-text="friendButtonText"
+        ></button>
       </div>
     </header>
 
@@ -56,7 +61,7 @@ export default {
   },
 
   methods: {
-    ...mapActions('Profile', ['fetchUser']),
+    ...mapActions('Profile', ['fetchUser', 'sendFriendRequest']),
     async getPosts() {
       try {
         const res = await axios.get(
@@ -72,7 +77,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters('Profile', ['userProfile']),
+    ...mapGetters('Profile', ['userProfile', 'friendButtonText']),
   },
 
   mounted() {

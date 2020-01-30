@@ -2264,6 +2264,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -2277,7 +2282,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       postLoading: true
     };
   },
-  methods: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_2__["mapActions"])('Profile', ['fetchUser']), {
+  methods: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_2__["mapActions"])('Profile', ['fetchUser', 'sendFriendRequest']), {
     getPosts: function getPosts() {
       var res;
       return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.async(function getPosts$(_context) {
@@ -2310,7 +2315,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }, null, this, [[0, 7]]);
     }
   }),
-  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_2__["mapGetters"])('Profile', ['userProfile'])),
+  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_2__["mapGetters"])('Profile', ['userProfile', 'friendButtonText'])),
   mounted: function mounted() {
     var userId = this.$route.params.userId;
     this.fetchUser(userId);
@@ -21311,7 +21316,26 @@ var render = function() {
         ]
       ),
       _vm._v(" "),
-      _vm._m(2)
+      _c(
+        "div",
+        {
+          staticClass:
+            "absolute flex items-center bottom-0 right-0 mb-4 mr-12 z-20"
+        },
+        [
+          _vm.friendButtonText
+            ? _c("button", {
+                staticClass: "py-1 px-3 bg-gray-400 rounded",
+                domProps: { textContent: _vm._s(_vm.friendButtonText) },
+                on: {
+                  click: function($event) {
+                    return _vm.sendFriendRequest(_vm.$route.params.userId)
+                  }
+                }
+              })
+            : _vm._e()
+        ]
+      )
     ]),
     _vm._v(" "),
     _vm.postLoading
@@ -21371,23 +21395,6 @@ var staticRenderFns = [
         attrs: { src: "https://picsum.photos/300/300", alt: "Profile" }
       })
     ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "div",
-      {
-        staticClass:
-          "absolute flex items-center bottom-0 right-0 mb-4 mr-12 z-20"
-      },
-      [
-        _c("button", { staticClass: "py-1 px-3 bg-gray-400 rounded" }, [
-          _vm._v("Add Friend")
-        ])
-      ]
-    )
   }
 ]
 render._withStripped = true
@@ -37998,28 +38005,38 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 var SET_USER = 'profile/SET_USER';
 var SET_USER_STATUS = 'profile/SET_USER_STATUS';
+var SET_BUTTON_TEXT = 'profile/SET_BUTTON_TEXT';
 var state = {
   user: null,
-  userStatus: null
+  userStatus: null,
+  friendButtonText: null
 };
 var getters = {
   userProfile: function userProfile(state) {
     return state.user;
+  },
+  friendship: function friendship(state) {
+    return state.user.data.attributes.friendship;
+  },
+  friendButtonText: function friendButtonText(state) {
+    return state.friendButtonText;
   }
 };
 var mutations = (_mutations = {}, _defineProperty(_mutations, SET_USER, function (state, user) {
   state.user = user;
 }), _defineProperty(_mutations, SET_USER_STATUS, function (state, status) {
   state.userStatus = status;
+}), _defineProperty(_mutations, SET_BUTTON_TEXT, function (state, text) {
+  state.friendButtonText = text;
 }), _mutations);
 var actions = {
   fetchUser: function fetchUser(_ref, userId) {
-    var commit, res;
+    var commit, dispatch, res;
     return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.async(function fetchUser$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
-            commit = _ref.commit;
+            commit = _ref.commit, dispatch = _ref.dispatch;
             _context.prev = 1;
             commit(SET_USER_STATUS, 'loading');
             _context.next = 5;
@@ -38029,21 +38046,64 @@ var actions = {
             res = _context.sent;
             commit(SET_USER, res.data);
             commit(SET_USER_STATUS, 'success');
-            _context.next = 14;
+            dispatch('setFriendButton');
+            _context.next = 15;
             break;
 
-          case 10:
-            _context.prev = 10;
+          case 11:
+            _context.prev = 11;
             _context.t0 = _context["catch"](1);
             console.log("Unable to fetch the user from the server");
             commit(SET_USER_STATUS, 'error');
 
-          case 14:
+          case 15:
           case "end":
             return _context.stop();
         }
       }
-    }, null, null, [[1, 10]]);
+    }, null, null, [[1, 11]]);
+  },
+  sendFriendRequest: function sendFriendRequest(_ref2, friendId) {
+    var commit, res;
+    return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.async(function sendFriendRequest$(_context2) {
+      while (1) {
+        switch (_context2.prev = _context2.next) {
+          case 0:
+            commit = _ref2.commit;
+            commit(SET_BUTTON_TEXT, 'Loading...');
+            _context2.prev = 2;
+            _context2.next = 5;
+            return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.awrap(axios.post('/api/friend-request', {
+              friend_id: friendId
+            }));
+
+          case 5:
+            res = _context2.sent;
+            commit(SET_BUTTON_TEXT, 'Pending Friend Request');
+            _context2.next = 12;
+            break;
+
+          case 9:
+            _context2.prev = 9;
+            _context2.t0 = _context2["catch"](2);
+            commit(SET_BUTTON_TEXT, 'Add Friend');
+
+          case 12:
+          case "end":
+            return _context2.stop();
+        }
+      }
+    }, null, null, [[2, 9]]);
+  },
+  setFriendButton: function setFriendButton(_ref3) {
+    var commit = _ref3.commit,
+        getters = _ref3.getters;
+
+    if (!getters.friendship) {
+      commit(SET_BUTTON_TEXT, 'Add Friend');
+    } else if (!getters.friendship.data.attributes.confirmed_at) {
+      commit(SET_BUTTON_TEXT, 'Pending Friend Request');
+    }
   }
 };
 /* harmony default export */ __webpack_exports__["default"] = ({
