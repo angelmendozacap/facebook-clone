@@ -38005,11 +38005,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 var SET_USER = 'profile/SET_USER';
 var SET_USER_STATUS = 'profile/SET_USER_STATUS';
-var SET_BUTTON_TEXT = 'profile/SET_BUTTON_TEXT';
+var SET_USER_FRIENDSHIP = 'profile/SET_USER_FRIENDSHIP';
 var state = {
   user: null,
-  userStatus: null,
-  friendButtonText: null
+  userStatus: null
 };
 var getters = {
   userProfile: function userProfile(state) {
@@ -38018,16 +38017,20 @@ var getters = {
   friendship: function friendship(state) {
     return state.user.data.attributes.friendship;
   },
-  friendButtonText: function friendButtonText(state) {
-    return state.friendButtonText;
+  friendButtonText: function friendButtonText(state, getters, rootState) {
+    if (!getters.friendship) {
+      return 'Add Friend';
+    } else if (!getters.friendship.data.attributes.confirmed_at) {
+      return 'Pending Friend Request';
+    }
   }
 };
 var mutations = (_mutations = {}, _defineProperty(_mutations, SET_USER, function (state, user) {
   state.user = user;
+}), _defineProperty(_mutations, SET_USER_FRIENDSHIP, function (state, friendship) {
+  state.user.data.attributes.friendship = friendship;
 }), _defineProperty(_mutations, SET_USER_STATUS, function (state, status) {
   state.userStatus = status;
-}), _defineProperty(_mutations, SET_BUTTON_TEXT, function (state, text) {
-  state.friendButtonText = text;
 }), _mutations);
 var actions = {
   fetchUser: function fetchUser(_ref, userId) {
@@ -38046,22 +38049,21 @@ var actions = {
             res = _context.sent;
             commit(SET_USER, res.data);
             commit(SET_USER_STATUS, 'success');
-            dispatch('setFriendButton');
-            _context.next = 15;
+            _context.next = 14;
             break;
 
-          case 11:
-            _context.prev = 11;
+          case 10:
+            _context.prev = 10;
             _context.t0 = _context["catch"](1);
             console.log("Unable to fetch the user from the server");
             commit(SET_USER_STATUS, 'error');
 
-          case 15:
+          case 14:
           case "end":
             return _context.stop();
         }
       }
-    }, null, null, [[1, 11]]);
+    }, null, null, [[1, 10]]);
   },
   sendFriendRequest: function sendFriendRequest(_ref2, friendId) {
     var commit, res;
@@ -38070,40 +38072,28 @@ var actions = {
         switch (_context2.prev = _context2.next) {
           case 0:
             commit = _ref2.commit;
-            commit(SET_BUTTON_TEXT, 'Loading...');
-            _context2.prev = 2;
-            _context2.next = 5;
+            _context2.prev = 1;
+            _context2.next = 4;
             return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.awrap(axios.post('/api/friend-request', {
               friend_id: friendId
             }));
 
-          case 5:
+          case 4:
             res = _context2.sent;
-            commit(SET_BUTTON_TEXT, 'Pending Friend Request');
-            _context2.next = 12;
+            commit(SET_USER_FRIENDSHIP, res.data);
+            _context2.next = 10;
             break;
 
-          case 9:
-            _context2.prev = 9;
-            _context2.t0 = _context2["catch"](2);
-            commit(SET_BUTTON_TEXT, 'Add Friend');
+          case 8:
+            _context2.prev = 8;
+            _context2.t0 = _context2["catch"](1);
 
-          case 12:
+          case 10:
           case "end":
             return _context2.stop();
         }
       }
-    }, null, null, [[2, 9]]);
-  },
-  setFriendButton: function setFriendButton(_ref3) {
-    var commit = _ref3.commit,
-        getters = _ref3.getters;
-
-    if (!getters.friendship) {
-      commit(SET_BUTTON_TEXT, 'Add Friend');
-    } else if (!getters.friendship.data.attributes.confirmed_at) {
-      commit(SET_BUTTON_TEXT, 'Pending Friend Request');
-    }
+    }, null, null, [[1, 8]]);
   }
 };
 /* harmony default export */ __webpack_exports__["default"] = ({
