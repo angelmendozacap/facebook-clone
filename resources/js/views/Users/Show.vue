@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="status.user === 'success' && userProfile">
     <header class="relative mb-8">
       <div class="w-100 h-64 overflow-hidden z-10">
         <img
@@ -44,14 +44,22 @@
       </div>
     </header>
 
-    <span v-if="postLoading" class="mt-6">Loading Posts...</span>
+    <span v-if="status.posts === 'loading'" class="mt-6">Loading Posts...</span>
     <main v-else class="flex flex-col items-center">
-      <p v-if="!postLoading && !posts.data.length" class="bg-white px-4 py-2 rounded">
+      <p
+        v-if="status.posts !== 'loading' && !userPosts.data.length"
+        class="bg-white px-4 py-2 rounded"
+      >
         No Posts Found.
         <a href="#" class="text-blue-500 hover:text-blue-600">Get Started...</a>
       </p>
 
-      <Post v-for="post in posts.data" :post="post" :key="post.data.post_id" />
+      <Post
+        v-else-if="status.posts === 'success' && userPosts.data.length"
+        v-for="post in userPosts.data"
+        :post="post"
+        :key="post.data.post_id"
+      />
     </main>
   </div>
 </template>
@@ -67,42 +75,29 @@ export default {
     Post
   },
 
-  data() {
-    return {
-      posts: [],
-      postLoading: true
-    };
-  },
-
   methods: {
     ...mapActions('Profile', [
       'fetchUser',
+      'fetchUserPosts',
       'sendFriendRequest',
       'acceptFriendRequest',
       'ignoreFriendRequest'
     ]),
-    async getPosts() {
-      try {
-        const res = await axios.get(
-          `/api/users/${this.$route.params.userId}/posts`
-        );
-        this.posts = res.data;
-      } catch (err) {
-        console.log("Unable to fetch posts");
-      }
-
-      this.postLoading = false;
-    }
   },
 
   computed: {
-    ...mapGetters('Profile', ['userProfile', 'friendButtonText']),
+    ...mapGetters('Profile', [
+      'userProfile',
+      'friendButtonText',
+      'userPosts',
+      'status'
+    ]),
   },
 
   mounted() {
     const userId = this.$route.params.userId
     this.fetchUser(userId);
-    this.getPosts();
+    this.fetchUserPosts(userId)
   }
 }
 </script>

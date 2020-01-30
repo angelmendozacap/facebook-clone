@@ -2,13 +2,27 @@ const SET_USER = 'profile/SET_USER'
 const SET_USER_STATUS = 'profile/SET_USER_STATUS'
 const SET_USER_FRIENDSHIP = 'profile/SET_USER_FRIENDSHIP'
 
+const SET_POSTS = 'profile/SET_POSTS'
+const SET_POSTS_STATUS = 'profile/SET_POSTS_STATUS'
+
 const state = {
   user: null,
   userStatus: null,
+  posts: null,
+  postsStatus: null
 }
 const getters = {
   userProfile(state) {
     return state.user
+  },
+  userPosts(state) {
+    return state.posts
+  },
+  status(state) {
+    return {
+      user: state.userStatus,
+      posts: state.postsStatus
+    }
   },
   friendship(state) {
     return state.user.data.attributes.friendship
@@ -33,11 +47,18 @@ const mutations = {
   [SET_USER](state, user) {
     state.user = user
   },
+  [SET_USER_STATUS](state, status) {
+    state.userStatus = status
+  },
   [SET_USER_FRIENDSHIP](state, friendship) {
     state.user.data.attributes.friendship = friendship
   },
-  [SET_USER_STATUS](state, status) {
-    state.userStatus = status
+
+  [SET_POSTS](state, posts) {
+    state.posts = posts
+  },
+  [SET_POSTS_STATUS](state, status) {
+    state.postsStatus = status
   },
 }
 
@@ -53,6 +74,19 @@ const actions = {
     } catch (err) {
       console.log("Unable to fetch the user from the server");
       commit(SET_USER_STATUS, 'error')
+    }
+  },
+  async fetchUserPosts({ commit }, userId) {
+    try {
+      commit(SET_POSTS_STATUS, 'loading')
+
+      const res = await axios.get(`/api/users/${userId}/posts`)
+      commit(SET_POSTS, res.data)
+
+      commit(SET_POSTS_STATUS, 'success')
+    } catch (err) {
+      console.log("Unable to fetch posts");
+      commit(SET_POSTS_STATUS, 'error')
     }
   },
   async sendFriendRequest({ commit }, friendId) {
