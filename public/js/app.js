@@ -38042,7 +38042,9 @@ var getters = {
     return state.user.data.attributes.friendship;
   },
   friendButtonText: function friendButtonText(state, getters, rootState) {
-    if (!getters.friendship) {
+    if (rootState.User.user.data.user_id === state.user.data.user_id) {
+      return '';
+    } else if (!getters.friendship) {
       return 'Add Friend';
     } else if (!getters.friendship.data.attributes.confirmed_at && getters.friendship.data.attributes.friend_id !== rootState.User.user.data.user_id) {
       return 'Pending Friend Request';
@@ -38130,34 +38132,43 @@ var actions = {
     }, null, null, [[1, 10]]);
   },
   sendFriendRequest: function sendFriendRequest(_ref3, friendId) {
-    var commit, res;
+    var commit, getters, res;
     return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.async(function sendFriendRequest$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
           case 0:
-            commit = _ref3.commit;
-            _context3.prev = 1;
-            _context3.next = 4;
+            commit = _ref3.commit, getters = _ref3.getters;
+
+            if (!(getters.friendButtonText !== 'Add Friend')) {
+              _context3.next = 3;
+              break;
+            }
+
+            return _context3.abrupt("return");
+
+          case 3:
+            _context3.prev = 3;
+            _context3.next = 6;
             return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.awrap(axios.post('/api/friend-request', {
               friend_id: friendId
             }));
 
-          case 4:
+          case 6:
             res = _context3.sent;
             commit(SET_USER_FRIENDSHIP, res.data);
-            _context3.next = 10;
+            _context3.next = 12;
             break;
 
-          case 8:
-            _context3.prev = 8;
-            _context3.t0 = _context3["catch"](1);
-
           case 10:
+            _context3.prev = 10;
+            _context3.t0 = _context3["catch"](3);
+
+          case 12:
           case "end":
             return _context3.stop();
         }
       }
-    }, null, null, [[1, 8]]);
+    }, null, null, [[3, 10]]);
   },
   acceptFriendRequest: function acceptFriendRequest(_ref4, userId) {
     var commit, res;

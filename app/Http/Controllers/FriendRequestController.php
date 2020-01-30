@@ -22,7 +22,7 @@ class FriendRequestController extends Controller
 
         try {
             User::findOrFail($data['friend_id'])
-                ->friends()->syncWithoutDetaching([auth()->user()->id]);
+                ->friends()->syncWithoutDetaching(auth()->user());
         } catch (ModelNotFoundException $e) {
             throw new UserNotFoundException();
         }

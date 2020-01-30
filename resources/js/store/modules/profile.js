@@ -28,7 +28,10 @@ const getters = {
     return state.user.data.attributes.friendship
   },
   friendButtonText(state, getters, rootState) {
-    if (!getters.friendship) {
+    if (rootState.User.user.data.user_id === state.user.data.user_id) {
+      return ''
+
+    } else if (!getters.friendship) {
       return 'Add Friend'
 
     } else if (!getters.friendship.data.attributes.confirmed_at
@@ -89,7 +92,9 @@ const actions = {
       commit(SET_POSTS_STATUS, 'error')
     }
   },
-  async sendFriendRequest({ commit }, friendId) {
+  async sendFriendRequest({ commit, getters }, friendId) {
+    if (getters.friendButtonText !== 'Add Friend') return
+
     try {
       const res = await axios.post('/api/friend-request', { friend_id: friendId })
       commit(SET_USER_FRIENDSHIP, res.data)
