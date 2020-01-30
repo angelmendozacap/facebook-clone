@@ -3,7 +3,7 @@
     <header class="relative mb-8">
       <div class="w-100 h-64 overflow-hidden z-10">
         <img
-          src="http://lorempixel.com/960/720/nature/"
+          src="https://images.unsplash.com/photo-1571217668979-f46db8864f75?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1500&q=80"
           alt="user background image"
           class="object-cover w-full"
         />
@@ -22,10 +22,24 @@
 
       <div class="absolute flex items-center bottom-0 right-0 mb-4 mr-12 z-20">
         <button
-          v-if="friendButtonText"
+          v-if="friendButtonText && friendButtonText !== 'Accept'"
           class="py-1 px-3 bg-gray-400 rounded"
           @click="sendFriendRequest($route.params.userId)"
           v-text="friendButtonText"
+        ></button>
+
+        <button
+          v-if="friendButtonText && friendButtonText === 'Accept'"
+          class="mr-2 py-1 px-3 bg-blue-500 rounded text-white"
+          @click="acceptFriendRequest($route.params.userId)"
+          v-text="'Accept'"
+        ></button>
+
+        <button
+          v-if="friendButtonText && friendButtonText === 'Accept'"
+          class="mr-2 py-1 px-3 bg-gray-400 rounded"
+          @click="ignoreFriendRequest($route.params.userId)"
+          v-text="'Ignore'"
         ></button>
       </div>
     </header>
@@ -61,7 +75,12 @@ export default {
   },
 
   methods: {
-    ...mapActions('Profile', ['fetchUser', 'sendFriendRequest']),
+    ...mapActions('Profile', [
+      'fetchUser',
+      'sendFriendRequest',
+      'acceptFriendRequest',
+      'ignoreFriendRequest'
+    ]),
     async getPosts() {
       try {
         const res = await axios.get(

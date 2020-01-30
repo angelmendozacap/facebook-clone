@@ -16,10 +16,16 @@ const getters = {
   friendButtonText(state, getters, rootState) {
     if (!getters.friendship) {
       return 'Add Friend'
-    } else if (!getters.friendship.data.attributes.confirmed_at) {
+
+    } else if (!getters.friendship.data.attributes.confirmed_at
+      && getters.friendship.data.attributes.friend_id !== rootState.User.user.data.user_id
+    ) {
       return 'Pending Friend Request'
+    } else if (getters.friendship.data.attributes.confirmed_at) {
+      return ''
     }
 
+    return 'Accept'
   }
 }
 
@@ -36,7 +42,7 @@ const mutations = {
 }
 
 const actions = {
-  async fetchUser({ commit, dispatch }, userId) {
+  async fetchUser({ commit }, userId) {
     try {
       commit(SET_USER_STATUS, 'loading')
 
@@ -53,6 +59,20 @@ const actions = {
     try {
       const res = await axios.post('/api/friend-request', { friend_id: friendId })
       commit(SET_USER_FRIENDSHIP, res.data)
+    } catch (err) {
+    }
+  },
+  async acceptFriendRequest({ commit }, userId) {
+    try {
+      const res = await axios.post('/api/friend-request-response', { user_id: userId, status: 1 })
+      commit(SET_USER_FRIENDSHIP, res.data)
+    } catch (err) {
+    }
+  },
+  async ignoreFriendRequest({ commit }, userId) {
+    try {
+      await axios.delete('/api/friend-request-response/delete', { data: { user_id: userId } })
+      commit(SET_USER_FRIENDSHIP, null)
     } catch (err) {
     }
   },

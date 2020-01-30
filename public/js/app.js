@@ -1882,6 +1882,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     Sidebar: _Sidebar__WEBPACK_IMPORTED_MODULE_2__["default"]
   },
   methods: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])('User', ['fetchAuthUser']), {}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])('Title', ['setPageTitle'])),
+  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapGetters"])('User', ['authUser'])),
   watch: {
     $route: function $route(to, from) {
       this.setPageTitle(to.meta.title);
@@ -2269,6 +2270,20 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -2282,7 +2297,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       postLoading: true
     };
   },
-  methods: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_2__["mapActions"])('Profile', ['fetchUser', 'sendFriendRequest']), {
+  methods: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_2__["mapActions"])('Profile', ['fetchUser', 'sendFriendRequest', 'acceptFriendRequest', 'ignoreFriendRequest']), {
     getPosts: function getPosts() {
       var res;
       return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.async(function getPosts$(_context) {
@@ -20683,30 +20698,32 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    { staticClass: "flex flex-col flex-1 h-screen overflow-y-hidden" },
-    [
-      _c("Nav"),
-      _vm._v(" "),
-      _c(
+  return _vm.authUser
+    ? _c(
         "div",
-        { staticClass: "flex overflow-y-hidden flex-1" },
+        { staticClass: "flex flex-col flex-1 h-screen overflow-y-hidden" },
         [
-          _c("Sidebar"),
+          _c("Nav"),
           _vm._v(" "),
           _c(
             "div",
-            { staticClass: "overflow-x-hidden w-2/3" },
-            [_c("router-view", { key: _vm.$route.fullPath })],
+            { staticClass: "flex overflow-y-hidden flex-1" },
+            [
+              _c("Sidebar"),
+              _vm._v(" "),
+              _c(
+                "div",
+                { staticClass: "overflow-x-hidden w-2/3" },
+                [_c("router-view", { key: _vm.$route.fullPath })],
+                1
+              )
+            ],
             1
           )
         ],
         1
       )
-    ],
-    1
-  )
+    : _vm._e()
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -21323,13 +21340,37 @@ var render = function() {
             "absolute flex items-center bottom-0 right-0 mb-4 mr-12 z-20"
         },
         [
-          _vm.friendButtonText
+          _vm.friendButtonText && _vm.friendButtonText !== "Accept"
             ? _c("button", {
                 staticClass: "py-1 px-3 bg-gray-400 rounded",
                 domProps: { textContent: _vm._s(_vm.friendButtonText) },
                 on: {
                   click: function($event) {
                     return _vm.sendFriendRequest(_vm.$route.params.userId)
+                  }
+                }
+              })
+            : _vm._e(),
+          _vm._v(" "),
+          _vm.friendButtonText && _vm.friendButtonText === "Accept"
+            ? _c("button", {
+                staticClass: "mr-2 py-1 px-3 bg-blue-500 rounded text-white",
+                domProps: { textContent: _vm._s("Accept") },
+                on: {
+                  click: function($event) {
+                    return _vm.acceptFriendRequest(_vm.$route.params.userId)
+                  }
+                }
+              })
+            : _vm._e(),
+          _vm._v(" "),
+          _vm.friendButtonText && _vm.friendButtonText === "Accept"
+            ? _c("button", {
+                staticClass: "mr-2 py-1 px-3 bg-gray-400 rounded",
+                domProps: { textContent: _vm._s("Ignore") },
+                on: {
+                  click: function($event) {
+                    return _vm.ignoreFriendRequest(_vm.$route.params.userId)
                   }
                 }
               })
@@ -21378,7 +21419,8 @@ var staticRenderFns = [
       _c("img", {
         staticClass: "object-cover w-full",
         attrs: {
-          src: "http://lorempixel.com/960/720/nature/",
+          src:
+            "https://images.unsplash.com/photo-1571217668979-f46db8864f75?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1500&q=80",
           alt: "user background image"
         }
       })
@@ -38020,9 +38062,13 @@ var getters = {
   friendButtonText: function friendButtonText(state, getters, rootState) {
     if (!getters.friendship) {
       return 'Add Friend';
-    } else if (!getters.friendship.data.attributes.confirmed_at) {
+    } else if (!getters.friendship.data.attributes.confirmed_at && getters.friendship.data.attributes.friend_id !== rootState.User.user.data.user_id) {
       return 'Pending Friend Request';
+    } else if (getters.friendship.data.attributes.confirmed_at) {
+      return '';
     }
+
+    return 'Accept';
   }
 };
 var mutations = (_mutations = {}, _defineProperty(_mutations, SET_USER, function (state, user) {
@@ -38034,12 +38080,12 @@ var mutations = (_mutations = {}, _defineProperty(_mutations, SET_USER, function
 }), _mutations);
 var actions = {
   fetchUser: function fetchUser(_ref, userId) {
-    var commit, dispatch, res;
+    var commit, res;
     return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.async(function fetchUser$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
-            commit = _ref.commit, dispatch = _ref.dispatch;
+            commit = _ref.commit;
             _context.prev = 1;
             commit(SET_USER_STATUS, 'loading');
             _context.next = 5;
@@ -38094,6 +38140,68 @@ var actions = {
         }
       }
     }, null, null, [[1, 8]]);
+  },
+  acceptFriendRequest: function acceptFriendRequest(_ref3, userId) {
+    var commit, res;
+    return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.async(function acceptFriendRequest$(_context3) {
+      while (1) {
+        switch (_context3.prev = _context3.next) {
+          case 0:
+            commit = _ref3.commit;
+            _context3.prev = 1;
+            _context3.next = 4;
+            return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.awrap(axios.post('/api/friend-request-response', {
+              user_id: userId,
+              status: 1
+            }));
+
+          case 4:
+            res = _context3.sent;
+            commit(SET_USER_FRIENDSHIP, res.data);
+            _context3.next = 10;
+            break;
+
+          case 8:
+            _context3.prev = 8;
+            _context3.t0 = _context3["catch"](1);
+
+          case 10:
+          case "end":
+            return _context3.stop();
+        }
+      }
+    }, null, null, [[1, 8]]);
+  },
+  ignoreFriendRequest: function ignoreFriendRequest(_ref4, userId) {
+    var commit;
+    return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.async(function ignoreFriendRequest$(_context4) {
+      while (1) {
+        switch (_context4.prev = _context4.next) {
+          case 0:
+            commit = _ref4.commit;
+            _context4.prev = 1;
+            _context4.next = 4;
+            return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.awrap(axios["delete"]('/api/friend-request-response/delete', {
+              data: {
+                user_id: userId
+              }
+            }));
+
+          case 4:
+            commit(SET_USER_FRIENDSHIP, null);
+            _context4.next = 9;
+            break;
+
+          case 7:
+            _context4.prev = 7;
+            _context4.t0 = _context4["catch"](1);
+
+          case 9:
+          case "end":
+            return _context4.stop();
+        }
+      }
+    }, null, null, [[1, 7]]);
   }
 };
 /* harmony default export */ __webpack_exports__["default"] = ({
