@@ -2148,11 +2148,91 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "Post",
   props: ['post'],
-  methods: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])('Posts', ['likePost']))
+  data: function data() {
+    return {
+      comments: false,
+      commentBody: ''
+    };
+  },
+  methods: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])('Posts', ['likePost'])),
+  computed: {
+    postLikesCount: function postLikesCount() {
+      var likeCount = this.post.data.attributes.likes.like_count;
+      var likeCountText = "".concat(likeCount, " ").concat(likeCount === 1 ? 'like' : 'likes');
+      return likeCountText;
+    },
+    postCommentsCount: function postCommentsCount() {
+      var commentCount = this.post.data.attributes.comments.comment_count;
+      var commentCountText = "".concat(commentCount, " ").concat(commentCount === 1 ? 'comment' : 'comments');
+      return commentCountText;
+    }
+  }
 });
 
 /***/ }),
@@ -21640,7 +21720,7 @@ var render = function() {
                   "button",
                   {
                     staticClass:
-                      "bg-blue-500 text-white ml-2 px-3 py-1 rounded-full",
+                      "bg-blue-500 text-white ml-2 px-3 py-1 rounded-full focus:outline-none",
                     on: { click: _vm.postMessage }
                   },
                   [_vm._v("Post")]
@@ -21788,15 +21868,15 @@ var render = function() {
             _vm._v(" "),
             _c("p", {
               staticClass: "ml-1",
-              domProps: {
-                textContent: _vm._s(
-                  _vm.post.data.attributes.likes.like_count + " likes"
-                )
-              }
+              domProps: { textContent: _vm._s(_vm.postLikesCount) }
             })
           ]),
           _vm._v(" "),
-          _vm._m(1)
+          _c("div", [
+            _c("p", {
+              domProps: { textContent: _vm._s(_vm.postCommentsCount) }
+            })
+          ])
         ]
       ),
       _vm._v(" "),
@@ -21808,7 +21888,7 @@ var render = function() {
             "button",
             {
               staticClass:
-                "flex justify-center items-center py-2 rounded-lg text-sm w-full",
+                "flex justify-center items-center py-2 rounded-lg text-sm w-full focus:outline-none",
               class: [
                 _vm.post.data.attributes.likes.user_likes_post
                   ? "bg-blue-500 text-white"
@@ -21851,7 +21931,13 @@ var render = function() {
             "button",
             {
               staticClass:
-                "flex justify-center items-center py-2 rounded-lg text-sm text-gray-700 w-full hover:bg-gray-200"
+                "flex justify-center items-center py-2 rounded-lg text-sm w-full focus:outline-none hover:bg-gray-200",
+              class: [_vm.comments ? "text-blue-500" : "text-gray-700"],
+              on: {
+                click: function($event) {
+                  _vm.comments = !_vm.comments
+                }
+              }
             },
             [
               _c(
@@ -21877,7 +21963,135 @@ var render = function() {
             ]
           )
         ]
-      )
+      ),
+      _vm._v(" "),
+      _vm.comments
+        ? _c(
+            "div",
+            { staticClass: "border-t border-gray-400 p-4 pt-2" },
+            [
+              _c("div", { staticClass: "flex" }, [
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.commentBody,
+                      expression: "commentBody"
+                    }
+                  ],
+                  staticClass:
+                    "w-full pl-4 h-8 bg-gray-200 rounded-full focus:outline-none focus:shadow-outline",
+                  attrs: { type: "text", name: "comment" },
+                  domProps: { value: _vm.commentBody },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.commentBody = $event.target.value
+                    }
+                  }
+                }),
+                _vm._v(" "),
+                _vm.commentBody
+                  ? _c(
+                      "button",
+                      {
+                        staticClass:
+                          "bg-blue-500 text-white ml-2 px-1 py-1 rounded-full focus:outline-none"
+                      },
+                      [_vm._v("Post")]
+                    )
+                  : _vm._e()
+              ]),
+              _vm._v(" "),
+              _vm._l(_vm.post.data.attributes.comments.data, function(
+                comment,
+                commentKey
+              ) {
+                return _c(
+                  "div",
+                  { key: commentKey, staticClass: "flex my-4 items-center" },
+                  [
+                    _c(
+                      "div",
+                      { staticClass: "w-8" },
+                      [
+                        _c(
+                          "router-link",
+                          {
+                            staticClass: "cursor-pointer",
+                            attrs: {
+                              to:
+                                "/users/" +
+                                comment.data.attributes.commented_by.data
+                                  .user_id
+                            }
+                          },
+                          [
+                            _c("img", {
+                              staticClass: "w-8 h-8 object-cover rounded-full",
+                              attrs: {
+                                src: "https://picsum.photos/300/300",
+                                alt: "Profile"
+                              }
+                            })
+                          ]
+                        )
+                      ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "flex-1 ml-4" }, [
+                      _c(
+                        "div",
+                        { staticClass: "bg-gray-200 rounded-lg p-2 text-sm" },
+                        [
+                          _c("router-link", {
+                            staticClass:
+                              "cursor-pointer font-bold text-blue-700 hover:text-blue-500",
+                            attrs: {
+                              to:
+                                "/users/" +
+                                comment.data.attributes.commented_by.data
+                                  .user_id
+                            },
+                            domProps: {
+                              textContent: _vm._s(
+                                comment.data.attributes.commented_by.data
+                                  .attributes.name
+                              )
+                            }
+                          }),
+                          _vm._v(" "),
+                          _c("p", {
+                            staticClass: "inline",
+                            domProps: {
+                              textContent: _vm._s(comment.data.attributes.body)
+                            }
+                          })
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "text-xs text-gray-700 pl-2" }, [
+                        _c("p", {
+                          domProps: {
+                            textContent: _vm._s(
+                              comment.data.attributes.commented_at
+                            )
+                          }
+                        })
+                      ])
+                    ])
+                  ]
+                )
+              })
+            ],
+            2
+          )
+        : _vm._e()
     ]
   )
 }
@@ -21892,12 +22106,6 @@ var staticRenderFns = [
         attrs: { src: "https://picsum.photos/300/300", alt: "Profile" }
       })
     ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", [_c("p", [_vm._v("123 comments")])])
   }
 ]
 render._withStripped = true
@@ -38789,7 +38997,6 @@ var mutations = (_mutations = {}, _defineProperty(_mutations, SET_POSTS, functio
 }), _defineProperty(_mutations, PUSH_POSTS, function (state, post) {
   state.newsPosts.data.unshift(post);
 }), _defineProperty(_mutations, PUSH_LIKES, function (state, data) {
-  console.log(data);
   var likes = data.likes,
       postKey = data.postKey;
   state.newsPosts.data[postKey].data.attributes.likes = likes;
@@ -38868,30 +39075,29 @@ var actions = {
           case 0:
             commit = _ref3.commit;
             _context3.prev = 1;
-            console.log(data);
             postId = data.postId, postKey = data.postKey;
-            _context3.next = 6;
+            _context3.next = 5;
             return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.awrap(axios.post("/api/posts/".concat(postId, "/like")));
 
-          case 6:
+          case 5:
             res = _context3.sent;
             commit(PUSH_LIKES, {
               likes: res.data,
               postKey: postKey
             });
-            _context3.next = 12;
+            _context3.next = 11;
             break;
 
-          case 10:
-            _context3.prev = 10;
+          case 9:
+            _context3.prev = 9;
             _context3.t0 = _context3["catch"](1);
 
-          case 12:
+          case 11:
           case "end":
             return _context3.stop();
         }
       }
-    }, null, null, [[1, 10]]);
+    }, null, null, [[1, 9]]);
   }
 };
 /* harmony default export */ __webpack_exports__["default"] = ({

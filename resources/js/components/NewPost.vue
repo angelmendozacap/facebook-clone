@@ -23,7 +23,7 @@
           <button
             v-if="textMessage"
             @click="postMessage"
-            class="bg-blue-500 text-white ml-2 px-3 py-1 rounded-full"
+            class="bg-blue-500 text-white ml-2 px-3 py-1 rounded-full focus:outline-none"
           >Post</button>
         </transition>
       </div>

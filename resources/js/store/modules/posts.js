@@ -37,7 +37,6 @@ const mutations = {
     state.newsPosts.data.unshift(post)
   },
   [PUSH_LIKES](state, data) {
-    console.log(data)
     const { likes, postKey } = data
     state.newsPosts.data[postKey].data.attributes.likes = likes
   }
@@ -73,7 +72,6 @@ const actions = {
 
   async likePost({ commit }, data) {
     try {
-      console.log(data)
       const { postId, postKey } = data
 
       const res = await axios.post(`/api/posts/${postId}/like`)
