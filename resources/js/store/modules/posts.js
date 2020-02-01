@@ -2,6 +2,7 @@ const SET_POSTS = 'posts/SET_POSTS'
 const SET_POSTS_STATUS = 'posts/SET_POSTS_STATUS'
 const UPDATE_MESSAGE = 'posts/UPDATE_MESSAGE'
 const PUSH_POSTS = 'posts/PUSH_POSTS'
+const PUSH_LIKES = 'posts/PUSH_LIKES'
 
 const state = {
   newsPosts: null,
@@ -34,6 +35,11 @@ const mutations = {
   },
   [PUSH_POSTS](state, post) {
     state.newsPosts.data.unshift(post)
+  },
+  [PUSH_LIKES](state, data) {
+    console.log(data)
+    const { likes, postKey } = data
+    state.newsPosts.data[postKey].data.attributes.likes = likes
   }
 }
 
@@ -61,6 +67,17 @@ const actions = {
       commit(UPDATE_MESSAGE, '')
 
       commit(SET_POSTS_STATUS, 'success')
+    } catch (err) {
+    }
+  },
+
+  async likePost({ commit }, data) {
+    try {
+      console.log(data)
+      const { postId, postKey } = data
+
+      const res = await axios.post(`/api/posts/${postId}/like`)
+      commit(PUSH_LIKES, { likes: res.data, postKey })
     } catch (err) {
     }
   }

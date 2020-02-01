@@ -2069,6 +2069,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 //
 //
 //
@@ -2134,9 +2141,18 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "Post",
-  props: ['post']
+  props: ['post'],
+  methods: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])('Posts', ['likePost']))
 });
 
 /***/ }),
@@ -21770,9 +21786,14 @@ var render = function() {
               ]
             ),
             _vm._v(" "),
-            _c("p", { staticClass: "ml-2" }, [
-              _vm._v("Jane Smith and 137 others")
-            ])
+            _c("p", {
+              staticClass: "ml-1",
+              domProps: {
+                textContent: _vm._s(
+                  _vm.post.data.attributes.likes.like_count + " likes"
+                )
+              }
+            })
           ]),
           _vm._v(" "),
           _vm._m(1)
@@ -21787,7 +21808,20 @@ var render = function() {
             "button",
             {
               staticClass:
-                "flex justify-center items-center py-2 rounded-lg text-sm text-gray-700 w-full hover:bg-gray-200"
+                "flex justify-center items-center py-2 rounded-lg text-sm w-full",
+              class: [
+                _vm.post.data.attributes.likes.user_likes_post
+                  ? "bg-blue-500 text-white"
+                  : "hover:bg-gray-200 text-gray-700"
+              ],
+              on: {
+                click: function($event) {
+                  return _vm.likePost({
+                    postId: _vm.post.data.post_id,
+                    postKey: _vm.$vnode.key
+                  })
+                }
+              }
             },
             [
               _c(
@@ -21935,8 +21969,8 @@ var render = function() {
       _vm.newsStatus.postsStatus === "loading"
         ? _c("span", { staticClass: "mt-6" }, [_vm._v("Loading...")])
         : _vm.newsStatus.postsStatus === "success" && _vm.newsPosts.data.length
-        ? _vm._l(_vm.newsPosts.data, function(post) {
-            return _c("Post", { key: post.data.post_id, attrs: { post: post } })
+        ? _vm._l(_vm.newsPosts.data, function(post, postKey) {
+            return _c("Post", { key: postKey, attrs: { post: post } })
           })
         : _vm._e()
     ],
@@ -38727,6 +38761,7 @@ var SET_POSTS = 'posts/SET_POSTS';
 var SET_POSTS_STATUS = 'posts/SET_POSTS_STATUS';
 var UPDATE_MESSAGE = 'posts/UPDATE_MESSAGE';
 var PUSH_POSTS = 'posts/PUSH_POSTS';
+var PUSH_LIKES = 'posts/PUSH_LIKES';
 var state = {
   newsPosts: null,
   newsPostsStatus: null,
@@ -38753,6 +38788,11 @@ var mutations = (_mutations = {}, _defineProperty(_mutations, SET_POSTS, functio
   state.postTextMessage = message;
 }), _defineProperty(_mutations, PUSH_POSTS, function (state, post) {
   state.newsPosts.data.unshift(post);
+}), _defineProperty(_mutations, PUSH_LIKES, function (state, data) {
+  console.log(data);
+  var likes = data.likes,
+      postKey = data.postKey;
+  state.newsPosts.data[postKey].data.attributes.likes = likes;
 }), _mutations);
 var actions = {
   fetchNewsPosts: function fetchNewsPosts(_ref) {
@@ -38819,6 +38859,39 @@ var actions = {
         }
       }
     }, null, null, [[1, 11]]);
+  },
+  likePost: function likePost(_ref3, data) {
+    var commit, postId, postKey, res;
+    return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.async(function likePost$(_context3) {
+      while (1) {
+        switch (_context3.prev = _context3.next) {
+          case 0:
+            commit = _ref3.commit;
+            _context3.prev = 1;
+            console.log(data);
+            postId = data.postId, postKey = data.postKey;
+            _context3.next = 6;
+            return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.awrap(axios.post("/api/posts/".concat(postId, "/like")));
+
+          case 6:
+            res = _context3.sent;
+            commit(PUSH_LIKES, {
+              likes: res.data,
+              postKey: postKey
+            });
+            _context3.next = 12;
+            break;
+
+          case 10:
+            _context3.prev = 10;
+            _context3.t0 = _context3["catch"](1);
+
+          case 12:
+          case "end":
+            return _context3.stop();
+        }
+      }
+    }, null, null, [[1, 10]]);
   }
 };
 /* harmony default export */ __webpack_exports__["default"] = ({

@@ -9,9 +9,9 @@
 
     <Post
       v-else-if="newsStatus.postsStatus === 'success' && newsPosts.data.length"
-      v-for="post in newsPosts.data"
+      v-for="(post,postKey) in newsPosts.data"
       :post="post"
-      :key="post.data.post_id"
+      :key="postKey"
     />
   </div>
 </template>
