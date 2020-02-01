@@ -1,9 +1,12 @@
 const SET_POSTS = 'posts/SET_POSTS'
 const SET_POSTS_STATUS = 'posts/SET_POSTS_STATUS'
+const UPDATE_MESSAGE = 'posts/UPDATE_MESSAGE'
+const PUSH_POSTS = 'posts/PUSH_POSTS'
 
 const state = {
   newsPosts: null,
   newsPostsStatus: null,
+  postTextMessage: ''
 }
 const getters = {
   newsPosts(state) {
@@ -13,6 +16,9 @@ const getters = {
     return {
       postsStatus: state.newsPostsStatus
     }
+  },
+  postTextMessage(state) {
+    return state.postTextMessage
   }
 }
 
@@ -22,6 +28,12 @@ const mutations = {
   },
   [SET_POSTS_STATUS](state, status) {
     state.newsPostsStatus = status
+  },
+  [UPDATE_MESSAGE](state, message) {
+    state.postTextMessage = message
+  },
+  [PUSH_POSTS](state, post) {
+    state.newsPosts.data.unshift(post)
   }
 }
 
@@ -37,6 +49,19 @@ const actions = {
     } catch (err) {
       console.log('Unable to fetch posts')
       commit(SET_POSTS_STATUS, 'error')
+    }
+  },
+
+  async postMessage({ commit, state }) {
+    try {
+      commit(SET_POSTS_STATUS, 'loading')
+
+      const res = await axios.post('/api/posts', { body: state.postTextMessage })
+      commit(PUSH_POSTS, res.data)
+      commit(UPDATE_MESSAGE, '')
+
+      commit(SET_POSTS_STATUS, 'success')
+    } catch (err) {
     }
   }
 }

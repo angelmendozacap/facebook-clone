@@ -12,13 +12,20 @@
       </div>
       <div class="flex-1 flex mx-4">
         <input
+          v-model="textMessage"
           type="text"
           name="body"
           class="w-full pl-4 h-8 bg-gray-200 rounded-full bg-gray-200 focus:outline-none focus:shadow-outline text-sm"
           placeholder="Add a Post"
         />
 
-        <button class="bg-gray-200 ml-2 px-3 py-1 rounded-full">Post</button>
+        <transition name="bounce">
+          <button
+            v-if="textMessage"
+            @click="postMessage"
+            class="bg-blue-500 text-white ml-2 px-3 py-1 rounded-full"
+          >Post</button>
+        </transition>
       </div>
       <div>
         <button class="flex justify-center items-center rounded-full w-10 h-10 bg-gray-200">
@@ -34,7 +41,49 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex';
+import _ from 'lodash'
+
 export default {
-  name: "NewPost"
+  name: "NewPost",
+
+  methods: {
+    ...mapActions('Posts', ['postMessage'])
+  },
+
+  computed: {
+    ...mapGetters('Posts', ['postTextMessage']),
+
+    textMessage: {
+      get() {
+        return this.postTextMessage
+      },
+      set: _.debounce(function (text) {
+        this.$store.commit('Posts/posts/UPDATE_MESSAGE', text)
+      }, 300)
+    }
+  },
 };
 </script>
+
+<style scoped>
+  .bounce-enter-active {
+    animation: bounce-in .5s;
+  }
+  .bounce-leave-active {
+    animation: bounce-in .5s reverse;
+  }
+  @keyframes bounce-in {
+    0% {
+      opacity: 0;
+      transform: scale(0);
+    }
+    50% {
+      transform: scale(1.2);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+</style>
