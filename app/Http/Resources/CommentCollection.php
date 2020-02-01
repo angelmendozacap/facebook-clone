@@ -16,6 +16,7 @@ class CommentCollection extends ResourceCollection
     {
         return [
             'data' => $this->collection,
+            'comment_count' => $this->count(),
             'links' => [
                 'self' => url('/posts')
             ]
