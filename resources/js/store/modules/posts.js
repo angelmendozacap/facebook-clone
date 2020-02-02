@@ -3,6 +3,7 @@ const SET_POSTS_STATUS = 'posts/SET_POSTS_STATUS'
 const UPDATE_MESSAGE = 'posts/UPDATE_MESSAGE'
 const PUSH_POSTS = 'posts/PUSH_POSTS'
 const PUSH_LIKES = 'posts/PUSH_LIKES'
+const PUSH_COMMENTS = 'posts/PUSH_COMMENTS'
 
 const state = {
   newsPosts: null,
@@ -39,6 +40,10 @@ const mutations = {
   [PUSH_LIKES](state, data) {
     const { likes, postKey } = data
     state.newsPosts.data[postKey].data.attributes.likes = likes
+  },
+  [PUSH_COMMENTS](state, data) {
+    const { comments, postKey } = data
+    state.newsPosts.data[postKey].data.attributes.comments = comments
   }
 }
 
@@ -76,6 +81,16 @@ const actions = {
 
       const res = await axios.post(`/api/posts/${postId}/like`)
       commit(PUSH_LIKES, { likes: res.data, postKey })
+    } catch (err) {
+    }
+  },
+
+  async commentPost({ commit }, data) {
+    try {
+      const { body, postId, postKey } = data
+
+      const res = await axios.post(`/api/posts/${postId}/comment`, { body })
+      commit(PUSH_COMMENTS, { comments: res.data, postKey })
     } catch (err) {
     }
   }

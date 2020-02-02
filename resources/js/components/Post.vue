@@ -83,10 +83,13 @@
           class="w-full pl-4 h-8 bg-gray-200 rounded-full focus:outline-none focus:shadow-outline"
         >
 
-        <button
-          v-if="commentBody"
-          class="bg-blue-500 text-white ml-2 px-1 py-1 rounded-full focus:outline-none"
-        >Post</button>
+        <transition name="bounce">
+          <button
+            v-if="commentBody"
+            class="bg-blue-500 text-white ml-2 px-2 py-1 rounded-full focus:outline-none"
+            @click="commentPost({ body: commentBody, postId: post.data.post_id, postKey: $vnode.key }); commentBody = ''"
+          >Post</button>
+        </transition>
       </div>
 
       <div
@@ -147,7 +150,7 @@ export default {
   },
 
   methods: {
-    ...mapActions('Posts', ['likePost'])
+    ...mapActions('Posts', ['likePost', 'commentPost'])
   },
 
   computed: {
@@ -166,3 +169,25 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+  .bounce-enter-active {
+    animation: bounce-in .5s;
+  }
+  .bounce-leave-active {
+    animation: bounce-in .5s reverse;
+  }
+  @keyframes bounce-in {
+    0% {
+      opacity: 0;
+      transform: scale(0);
+    }
+    50% {
+      transform: scale(1.2);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+</style>
