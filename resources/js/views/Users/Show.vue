@@ -2,10 +2,10 @@
   <div v-if="status.user === 'success' && userProfile">
     <header class="relative mb-8">
       <div class="w-100 h-64 overflow-hidden z-10">
-        <img
-          src="https://images.unsplash.com/photo-1571217668979-f46db8864f75?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1500&q=80"
-          alt="user background image"
-          class="object-cover w-full"
+        <UploadableImage
+          imageWidth="1500"
+          imageHeight="300"
+          location="cover"
         />
       </div>
 
@@ -66,13 +66,15 @@
 
 <script>
 import Post from "../../components/Post"
+import UploadableImage from '../../components/UploadableImage'
 import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: "Show",
 
   components: {
-    Post
+    Post,
+    UploadableImage
   },
 
   methods: {

@@ -22,7 +22,7 @@ class UserImage extends JsonResource
                     'path' => url($this->path),
                     'width' => $this->width,
                     'height' => $this->height,
-                    'cover' => $this->cover
+                    'location' => $this->location
                 ]
             ],
             'links' => [

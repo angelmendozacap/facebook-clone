@@ -56,7 +56,7 @@ class UserImagesTest extends TestCase
                     'path' => url($userImage->path),
                     'width' => $userImage->width,
                     'height' => $userImage->height,
-                    'cover' => $userImage->cover
+                    'location' => $userImage->location
                 ]
             ],
             'links' => [
