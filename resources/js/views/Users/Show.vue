@@ -44,10 +44,10 @@
       </div>
     </header>
 
-    <span v-if="status.posts === 'loading'" class="mt-6">Loading Posts...</span>
+    <span v-if="newsStatus.postsStatus === 'loading'" class="mt-6">Loading Posts...</span>
     <main v-else class="flex flex-col items-center">
       <p
-        v-if="status.posts !== 'loading' && !userPosts.data.length"
+        v-if="newsStatus.postsStatus !== 'loading' && !posts.data.length"
         class="bg-white px-4 py-2 rounded"
       >
         No Posts Found.
@@ -55,10 +55,10 @@
       </p>
 
       <Post
-        v-else-if="status.posts === 'success' && userPosts.data.length"
-        v-for="post in userPosts.data"
+        v-else-if="newsStatus.postsStatus === 'success' && posts.data.length"
+        v-for="(post,postKey) in posts.data"
         :post="post"
-        :key="post.data.post_id"
+        :key="postKey"
       />
     </main>
   </div>
@@ -78,20 +78,22 @@ export default {
   methods: {
     ...mapActions('Profile', [
       'fetchUser',
-      'fetchUserPosts',
       'sendFriendRequest',
       'acceptFriendRequest',
       'ignoreFriendRequest'
     ]),
+
+    ...mapActions('Posts', ['fetchUserPosts'])
   },
 
   computed: {
     ...mapGetters('Profile', [
       'userProfile',
       'friendButtonText',
-      'userPosts',
       'status'
     ]),
+
+    ...mapGetters('Posts', ['posts', 'newsStatus'])
   },
 
   mounted() {

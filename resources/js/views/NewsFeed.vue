@@ -8,8 +8,8 @@
     >Loading...</span>
 
     <Post
-      v-else-if="newsStatus.postsStatus === 'success' && newsPosts.data.length"
-      v-for="(post,postKey) in newsPosts.data"
+      v-else-if="newsStatus.postsStatus === 'success' && posts.data.length"
+      v-for="(post,postKey) in posts.data"
       :post="post"
       :key="postKey"
     />
@@ -34,7 +34,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters('Posts', ['newsPosts', 'newsStatus'])
+    ...mapGetters('Posts', ['posts', 'newsStatus'])
   },
 
   mounted() {

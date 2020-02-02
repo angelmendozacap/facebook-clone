@@ -5,7 +5,9 @@
       <Sidebar />
 
       <div class="overflow-x-hidden w-2/3">
-        <router-view :key="$route.fullPath" />
+        <transition name="fade">
+          <router-view :key="$route.fullPath" />
+        </transition>
       </div>
     </div>
   </div>
@@ -49,3 +51,12 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
+</style>

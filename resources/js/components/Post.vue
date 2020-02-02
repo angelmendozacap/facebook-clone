@@ -81,6 +81,7 @@
           type="text"
           name="comment"
           class="w-full pl-4 h-8 bg-gray-200 rounded-full focus:outline-none focus:shadow-outline"
+          placeholder="Write Your Comment"
         >
 
         <transition name="bounce">

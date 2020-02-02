@@ -6,13 +6,13 @@ const PUSH_LIKES = 'posts/PUSH_LIKES'
 const PUSH_COMMENTS = 'posts/PUSH_COMMENTS'
 
 const state = {
-  newsPosts: null,
+  posts: null,
   newsPostsStatus: null,
   postTextMessage: ''
 }
 const getters = {
-  newsPosts(state) {
-    return state.newsPosts
+  posts(state) {
+    return state.posts
   },
   newsStatus(state) {
     return {
@@ -26,7 +26,7 @@ const getters = {
 
 const mutations = {
   [SET_POSTS](state, posts) {
-    state.newsPosts = posts
+    state.posts = posts
   },
   [SET_POSTS_STATUS](state, status) {
     state.newsPostsStatus = status
@@ -35,15 +35,15 @@ const mutations = {
     state.postTextMessage = message
   },
   [PUSH_POSTS](state, post) {
-    state.newsPosts.data.unshift(post)
+    state.posts.data.unshift(post)
   },
   [PUSH_LIKES](state, data) {
     const { likes, postKey } = data
-    state.newsPosts.data[postKey].data.attributes.likes = likes
+    state.posts.data[postKey].data.attributes.likes = likes
   },
   [PUSH_COMMENTS](state, data) {
     const { comments, postKey } = data
-    state.newsPosts.data[postKey].data.attributes.comments = comments
+    state.posts.data[postKey].data.attributes.comments = comments
   }
 }
 
@@ -58,6 +58,20 @@ const actions = {
       commit(SET_POSTS_STATUS, 'success')
     } catch (err) {
       console.log('Unable to fetch posts')
+      commit(SET_POSTS_STATUS, 'error')
+    }
+  },
+
+  async fetchUserPosts({ commit }, userId) {
+    try {
+      commit(SET_POSTS_STATUS, 'loading')
+
+      const res = await axios.get(`/api/users/${userId}/posts`)
+      commit(SET_POSTS, res.data)
+
+      commit(SET_POSTS_STATUS, 'success')
+    } catch (err) {
+      console.log("Unable to fetch posts");
       commit(SET_POSTS_STATUS, 'error')
     }
   },
