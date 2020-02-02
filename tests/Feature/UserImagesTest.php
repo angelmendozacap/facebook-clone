@@ -64,4 +64,51 @@ class UserImagesTest extends TestCase
             ]
         ]);
     }
+
+    /** @test */
+    public function user_are_returned_with_their_images()
+    {
+        $this->withoutExceptionHandling();
+
+        $file = UploadedFile::fake()->image('user_image.jpg');
+        $this->actingAs($user = factory(User::class)->create(), 'api');
+        $this->post('/api/user-images', [
+            'image' => $file,
+            'width' => 850,
+            'height' => 300,
+            'location' => 'cover'
+        ])->assertStatus(Response::HTTP_CREATED);
+
+        $this->post('/api/user-images', [
+            'image' => $file,
+            'width' => 850,
+            'height' => 300,
+            'location' => 'profile'
+        ])->assertStatus(Response::HTTP_CREATED);
+
+        $response = $this->get("/api/users/{$user->id}");
+
+        $response->assertJson([
+            'data' => [
+                'type' => 'users',
+                'user_id' => $user->id,
+                'attributes' => [
+                    'cover_image' => [
+                        'data' => [
+                            'type' => 'user_images',
+                            'user_image_id' => 1,
+                            'attributes' => []
+                        ]
+                    ],
+                    'profile_image' => [
+                        'data' => [
+                            'type' => 'user_images',
+                            'user_image_id' => 2,
+                            'attributes' => []
+                        ]
+                    ]
+                ]
+            ]
+        ]);
+    }
 }
