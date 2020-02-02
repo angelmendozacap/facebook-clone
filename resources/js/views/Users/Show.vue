@@ -6,15 +6,21 @@
           imageWidth="1500"
           imageHeight="300"
           location="cover"
+          classes="object-cover w-full"
+          :alt="`${userProfile.data.attributes.name} Background Image`"
+          :userImage="userProfile.data.attributes.cover_image"
         />
       </div>
 
       <div class="absolute flex items-center bottom-0 left-0 -mb-8 ml-12 z-20">
         <div class="w-32">
-          <img
-            src="https://picsum.photos/300/300"
-            class="w-32 h-32 object-cover border-4 border-gray-200 rounded-full shadow-lg"
-            alt="Profile"
+          <UploadableImage
+            imageWidth="1500"
+            imageHeight="300"
+            location="profile"
+            classes="w-32 h-32 object-cover border-4 border-gray-200 rounded-full shadow-lg"
+            :alt="`${userProfile.data.attributes.name} Profile`"
+            :userImage="userProfile.data.attributes.profile_image"
           />
         </div>
         <p class="text-2xl text-gray-100 ml-4" v-text="userProfile.data.attributes.name"></p>

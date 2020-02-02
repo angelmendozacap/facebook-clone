@@ -2299,15 +2299,30 @@ __webpack_require__.r(__webpack_exports__);
     location: {
       type: String,
       required: true
+    },
+    userImage: {
+      type: Object,
+      required: false
+    },
+    classes: {
+      type: String,
+      required: true
+    },
+    alt: {
+      type: String,
+      required: true
     }
   },
   data: function data() {
     return {
-      dropzone: null
+      dropzone: null,
+      uploadedImage: null
     };
   },
   computed: {
     settings: function settings() {
+      var _this = this;
+
       return {
         paramName: 'image',
         url: '/api/user-images',
@@ -2321,10 +2336,12 @@ __webpack_require__.r(__webpack_exports__);
           'X-CSRF-TOKEN': document.head.querySelector('meta[name=csrf-token]').content
         },
         success: function success(e, res) {
-          console.log(res);
-          alert('Uploaded!');
+          _this.uploadedImage = res;
         }
       };
+    },
+    imageObject: function imageObject() {
+      return this.uploadedImage || this.userImage;
     }
   },
   mounted: function mounted() {
@@ -2406,6 +2423,12 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -25918,12 +25941,8 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("img", {
     ref: "userImage",
-    staticClass: "object-cover w-full",
-    attrs: {
-      src:
-        "https://images.unsplash.com/photo-1571217668979-f46db8864f75?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1500&q=80",
-      alt: "user background image"
-    }
+    class: _vm.classes,
+    attrs: { src: _vm.imageObject.data.attributes.path, alt: _vm.alt }
   })
 }
 var staticRenderFns = []
@@ -25998,7 +26017,11 @@ var render = function() {
                 attrs: {
                   imageWidth: "1500",
                   imageHeight: "300",
-                  location: "cover"
+                  location: "cover",
+                  classes: "object-cover w-full",
+                  alt:
+                    _vm.userProfile.data.attributes.name + " Background Image",
+                  userImage: _vm.userProfile.data.attributes.cover_image
                 }
               })
             ],
@@ -26012,7 +26035,24 @@ var render = function() {
                 "absolute flex items-center bottom-0 left-0 -mb-8 ml-12 z-20"
             },
             [
-              _vm._m(0),
+              _c(
+                "div",
+                { staticClass: "w-32" },
+                [
+                  _c("UploadableImage", {
+                    attrs: {
+                      imageWidth: "1500",
+                      imageHeight: "300",
+                      location: "profile",
+                      classes:
+                        "w-32 h-32 object-cover border-4 border-gray-200 rounded-full shadow-lg",
+                      alt: _vm.userProfile.data.attributes.name + " Profile",
+                      userImage: _vm.userProfile.data.attributes.profile_image
+                    }
+                  })
+                ],
+                1
+              ),
               _vm._v(" "),
               _c("p", {
                 staticClass: "text-2xl text-gray-100 ml-4",
@@ -26101,20 +26141,7 @@ var render = function() {
       ])
     : _vm._e()
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "w-32" }, [
-      _c("img", {
-        staticClass:
-          "w-32 h-32 object-cover border-4 border-gray-200 rounded-full shadow-lg",
-        attrs: { src: "https://picsum.photos/300/300", alt: "Profile" }
-      })
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 
