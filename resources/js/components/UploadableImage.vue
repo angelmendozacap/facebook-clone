@@ -1,7 +1,7 @@
 <template>
   <img
     ref="userImage"
-    :src="imageObject.data.attributes.path"
+    :src="userImage.data.attributes.path"
     :alt="alt"
     :class="classes"
   />
@@ -9,6 +9,7 @@
 
 <script>
 import Dropzone from 'dropzone'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'UploadableImage',
@@ -42,12 +43,19 @@ export default {
 
   data() {
     return {
-      dropzone: null,
-      uploadedImage: null
+      dropzone: null
     }
   },
 
+  methods: {
+    ...mapActions('User', ['fetchAuthUser']),
+    ...mapActions('Posts', ['fetchUserPosts']),
+    ...mapActions('Profile', ['fetchUser'])
+  },
+
   computed: {
+    ...mapGetters('User', ['authUser']),
+
     settings() {
       return {
         paramName: 'image',
@@ -62,18 +70,18 @@ export default {
           'X-CSRF-TOKEN': document.head.querySelector('meta[name=csrf-token]').content
         },
         success: (e, res) => {
-          this.uploadedImage = res
+          this.fetchAuthUser()
+          this.fetchUser(this.$route.params.userId)
+          this.fetchUserPosts(this.$route.params.userId)
         }
       }
-    },
-
-    imageObject() {
-      return this.uploadedImage || this.userImage
     }
   },
 
   mounted() {
-    this.dropzone = new Dropzone(this.$refs.userImage, this.settings)
+    if (this.authUser.data.user_id.toString() === this.$route.params.userId) {
+      this.dropzone = new Dropzone(this.$refs.userImage, this.settings)
+    }
   }
 }
 </script>
