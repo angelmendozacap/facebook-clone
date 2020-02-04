@@ -26027,8 +26027,8 @@ var render = function() {
             [
               _c("UploadableImage", {
                 attrs: {
-                  imageWidth: "1500",
-                  imageHeight: "300",
+                  imageWidth: "1000",
+                  imageHeight: "562",
                   location: "cover",
                   classes: "object-cover w-full",
                   alt:
@@ -26053,8 +26053,8 @@ var render = function() {
                 [
                   _c("UploadableImage", {
                     attrs: {
-                      imageWidth: "1500",
-                      imageHeight: "300",
+                      imageWidth: "750",
+                      imageHeight: "750",
                       location: "profile",
                       classes:
                         "w-32 h-32 object-cover border-4 border-gray-200 rounded-full shadow-lg",
