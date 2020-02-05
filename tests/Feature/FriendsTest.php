@@ -48,6 +48,27 @@ class FriendsTest extends TestCase
     }
 
     /** @test */
+    public function an_user_can_send_a_friend_request_only_once()
+    {
+        $this->withoutExceptionHandling();
+
+        $this->actingAs($user = factory(User::class)->create(), 'api');
+        $anotherUser = factory(User::class)->create();
+
+        $this->post('/api/friend-request', [
+            'friend_id' => $anotherUser->id,
+        ])->assertStatus(Response::HTTP_OK);
+
+        $this->post('/api/friend-request', [
+            'friend_id' => $anotherUser->id,
+        ])->assertStatus(Response::HTTP_OK);
+
+        $friendRequests = Friend::all();
+
+        $this->assertCount(1, $friendRequests);
+    }
+
+    /** @test */
     public function only_valid_users_can_be_friend_requested()
     {
         // $this->withoutExceptionHandling();
@@ -99,7 +120,9 @@ class FriendsTest extends TestCase
                 'type' => 'friend-request',
                 'friend_request_id' => $friendRequest->id,
                 'attributes' => [
-                    'confirmed_at' => $friendRequest->confirmed_at->diffForHumans()
+                    'confirmed_at' => $friendRequest->confirmed_at->diffForHumans(),
+                    'friend_id' => $friendRequest->friend_id,
+                    'user_id' => $friendRequest->user_id
                 ]
             ],
             'links' => [
@@ -107,6 +130,29 @@ class FriendsTest extends TestCase
             ]
         ]);
 
+    }
+
+    /** @test */
+    public function friend_requests_can_be_ignored()
+    {
+        // $this->withoutExceptionHandling();
+
+        $this->actingAs($user = factory(User::class)->create(), 'api');
+        $anotherUser = factory(User::class)->create();
+
+        $response = $this->post('/api/friend-request', [
+            'friend_id' => $anotherUser->id,
+        ])->assertStatus(Response::HTTP_OK);
+
+        $response = $this->actingAs($anotherUser, 'api')
+            ->delete('/api/friend-request-response/delete', [
+                'user_id' => $user->id,
+            ])->assertStatus(Response::HTTP_NO_CONTENT);
+
+        $friendRequest = Friend::first();
+
+        $this->assertNull($friendRequest);
+        $response->assertNoContent();
     }
 
     /** @test */
@@ -164,6 +210,37 @@ class FriendsTest extends TestCase
     }
 
     /** @test */
+    public function only_the_recipient_can_ignore_a_friend()
+    {
+        // $this->withoutExceptionHandling();
+
+        $this->actingAs($user = factory(User::class)->create(), 'api');
+        $anotherUser = factory(User::class)->create();
+
+        $this->post('/api/friend-request', [
+            'friend_id' => $anotherUser->id,
+        ])->assertStatus(Response::HTTP_OK);
+
+        $response = $this->actingAs(factory(User::class)->create(), 'api')
+            ->delete('/api/friend-request-response/delete', [
+                'user_id' => $user->id,
+            ])->assertStatus(Response::HTTP_NOT_FOUND);
+
+        $friendRequest = Friend::first();
+
+        $this->assertNull($friendRequest->confirmed_at);
+        $this->assertNull($friendRequest->status);
+
+        $response->assertJson([
+            'errors' => [
+                'status' => Response::HTTP_NOT_FOUND,
+                'title' => 'Friend Request Not Found',
+                'detail' => 'Unable to locate the friend request with the given information.',
+            ]
+        ]);
+    }
+
+    /** @test */
     public function a_friend_id_is_required_for_friend_requests()
     {
         $response = $this->actingAs($user = factory(User::class)->create(), 'api')
@@ -190,5 +267,80 @@ class FriendsTest extends TestCase
         $this->assertArrayHasKey('user_id', $responseString['errors']['meta']);
         $this->assertArrayHasKey('status', $responseString['errors']['meta']);
 
+    }
+
+    /** @test */
+    public function a_user_id_is_required_for_ignoring_a_friend_request_responses()
+    {
+        $response = $this->actingAs($user = factory(User::class)->create(), 'api')
+            ->delete('/api/friend-request-response/delete', [
+                'user_id' => '',
+            ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+
+        $responseString = json_decode($response->getContent(), true);
+
+        $this->assertArrayHasKey('user_id', $responseString['errors']['meta']);
+    }
+
+    /** @test */
+    public function a_friendship_is_retrieved_when_fetching_the_profile()
+    {
+        $this->actingAs($user = factory(User::class)->create(), 'api');
+        $anotherUser = factory(User::class)->create();
+
+        $friendRequest = Friend::create([
+            'user_id' => $user->id,
+            'friend_id' => $anotherUser->id,
+            'confirmed_at' => now()->subDay(),
+            'status' => 1
+        ]);
+
+        $this->get('/api/users/' . $anotherUser->id)
+            ->assertStatus(Response::HTTP_OK)
+            ->assertJson([
+                'data' => [
+                    'attributes' => [
+                        'friendship' => [
+                            'data' => [
+                                'friend_request_id' => $friendRequest->id,
+                                'attributes' => [
+                                    'confirmed_at' => '1 day ago'
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ]);
+    }
+
+    /** @test */
+    public function an_inverse_friendship_is_retrieved_when_fetching_the_profile()
+    {
+        $this->actingAs($user = factory(User::class)->create(), 'api');
+        $anotherUser = factory(User::class)->create();
+
+        $friendRequest = Friend::create([
+            'friend_id' => $user->id,
+            'user_id' => $anotherUser->id,
+            'confirmed_at' => now()->subDay(),
+            'status' => 1
+        ]);
+
+        $this->get('/api/users/' . $anotherUser->id)
+            ->assertStatus(Response::HTTP_OK)
+            ->assertJson([
+                'data' => [
+                    'attributes' => [
+                        'friendship' => [
+                            'data' => [
+                                'friend_request_id' => $friendRequest->id,
+                                'attributes' => [
+                                    'confirmed_at' => '1 day ago'
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ]);
     }
 }

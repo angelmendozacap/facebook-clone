@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class Friend extends JsonResource
+class UserImage extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,16 +16,17 @@ class Friend extends JsonResource
     {
         return [
             'data' => [
-                'type' => 'friend-request',
-                'friend_request_id' => $this->id,
+                'type' => 'user_images',
+                'user_image_id' => $this->id,
                 'attributes' => [
-                    'confirmed_at' => optional($this->confirmed_at)->diffForHumans(),
-                    'friend_id' => $this->friend_id,
-                    'user_id' => $this->user_id
+                    'path' => url("/storage/{$this->path}"),
+                    'width' => $this->width,
+                    'height' => $this->height,
+                    'location' => $this->location
                 ]
             ],
             'links' => [
-                'self' => url('/users/' . $this->friend_id)
+                'self' => url("/users/{$this->user_id}")
             ]
         ];
     }

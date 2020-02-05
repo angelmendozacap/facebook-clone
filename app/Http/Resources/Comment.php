@@ -2,9 +2,10 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Resources\User as UserResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class Friend extends JsonResource
+class Comment extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,16 +17,16 @@ class Friend extends JsonResource
     {
         return [
             'data' => [
-                'type' => 'friend-request',
-                'friend_request_id' => $this->id,
+                'type' => 'comments',
+                'comment_id' => $this->id,
                 'attributes' => [
-                    'confirmed_at' => optional($this->confirmed_at)->diffForHumans(),
-                    'friend_id' => $this->friend_id,
-                    'user_id' => $this->user_id
+                    'commented_by' => new UserResource($this->user),
+                    'body' => $this->body,
+                    'commented_at' => $this->created_at->diffForHumans()
                 ]
             ],
             'links' => [
-                'self' => url('/users/' . $this->friend_id)
+                'self' => url("/posts/{$this->post_id}")
             ]
         ];
     }

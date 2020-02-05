@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateFriendsTable extends Migration
+class CreateLikesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,11 @@ class CreateFriendsTable extends Migration
      */
     public function up()
     {
-        Schema::create('friends', function (Blueprint $table) {
+        Schema::create('likes', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('friend_id');
+            $table->unsignedBigInteger('post_id');
             $table->unsignedBigInteger('user_id');
-            $table->boolean('status')->nullable();
-            $table->timestamp('confirmed_at')->nullable();
             $table->timestamps();
-
-            $table->unique(['user_id', 'friend_id']);
         });
     }
 
@@ -32,6 +28,6 @@ class CreateFriendsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('friends');
+        Schema::dropIfExists('likes');
     }
 }

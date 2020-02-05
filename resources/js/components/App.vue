@@ -1,11 +1,13 @@
 <template>
-  <div class="flex flex-col flex-1 h-screen overflow-y-hidden">
+  <div class="flex flex-col flex-1 h-screen overflow-y-hidden" v-if="authUser">
     <Nav />
     <div class="flex overflow-y-hidden flex-1">
       <Sidebar />
 
       <div class="overflow-x-hidden w-2/3">
-        <router-view />
+        <transition name="fade">
+          <router-view :key="$route.fullPath" />
+        </transition>
       </div>
     </div>
   </div>
@@ -13,7 +15,7 @@
 
 <script>
 
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 
 import Nav from './Nav'
 import Sidebar from './Sidebar'
@@ -33,6 +35,9 @@ export default {
       'setPageTitle'
     ])
   },
+  computed: {
+    ...mapGetters('User', ['authUser'])
+  },
   watch: {
     $route(to, from) {
       this.setPageTitle(to.meta.title)
@@ -46,3 +51,12 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
+</style>
