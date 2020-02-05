@@ -4,7 +4,7 @@
       <div class="flex items-center">
         <div>
           <img
-            src="https://picsum.photos/300/300"
+            :src="post.data.attributes.posted_by.data.attributes.profile_image.data.attributes.path"
             class="w-8 h-8 object-cover rounded-full"
             alt="Profile"
           />
@@ -93,6 +93,7 @@
         </transition>
       </div>
 
+      <!-- COMMENTS -->
       <div
         v-for="(comment,commentKey) in post.data.attributes.comments.data"
         :key="commentKey"
@@ -104,7 +105,7 @@
             class="cursor-pointer"
           >
             <img
-              src="https://picsum.photos/300/300"
+              :src="comment.data.attributes.commented_by.data.attributes.profile_image.data.attributes.path"
               class="w-8 h-8 object-cover rounded-full"
               alt="Profile"
             />

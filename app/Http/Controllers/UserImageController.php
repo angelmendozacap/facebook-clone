@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Resources\UserImage as UserImageResource;
+use Intervention\Image\Facades\Image;
 use Symfony\Component\HttpFoundation\Response;
+use App\Http\Resources\UserImage as UserImageResource;
 
 class UserImageController extends Controller
 {
@@ -18,6 +19,10 @@ class UserImageController extends Controller
         ]);
 
         $image = $data['image']->store('user-images', 'public');
+
+        Image::make($data['image'])
+            ->fit($data['width'], $data['height'])
+            ->save(storage_path('app/public/user-images/' . $data['image']->hashName()));
 
         $userImage = auth()->user()->images()->create([
             'path' => $image,

@@ -3,8 +3,8 @@
     <header class="relative mb-8">
       <div class="w-100 h-64 overflow-hidden z-10">
         <UploadableImage
-          imageWidth="1500"
-          imageHeight="300"
+          imageWidth="1000"
+          imageHeight="562"
           location="cover"
           classes="object-cover w-full"
           :alt="`${userProfile.data.attributes.name} Background Image`"
@@ -15,8 +15,8 @@
       <div class="absolute flex items-center bottom-0 left-0 -mb-8 ml-12 z-20">
         <div class="w-32">
           <UploadableImage
-            imageWidth="1500"
-            imageHeight="300"
+            imageWidth="750"
+            imageHeight="750"
             location="profile"
             classes="w-32 h-32 object-cover border-4 border-gray-200 rounded-full shadow-lg"
             :alt="`${userProfile.data.attributes.name} Profile`"

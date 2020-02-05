@@ -40,7 +40,7 @@
 
         <li class="h-full">
           <router-link :to="{name:'user.show', params: { userId: authUser.data.user_id }}" class="block border-b-2 border-white px-6 h-full flex items-center">
-            <img src="https://picsum.photos/300/300" class="w-8 h-8 object-cover rounded-full" alt="Profile">
+            <img :src="authUser.data.attributes.profile_image.data.attributes.path" class="w-8 h-8 object-cover rounded-full" alt="Profile">
           </router-link>
         </li>
 

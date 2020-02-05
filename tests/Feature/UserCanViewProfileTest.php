@@ -67,7 +67,7 @@ class UserCanViewProfileTest extends TestCase
                                 ],
                                 'body' => $post->body,
                                 'posted_at' => $post->created_at->diffForHumans(),
-                                'image' => $post->image
+                                'image' => url("/storage/{$post->image}")
                             ]
                         ],
                         'links' => [
