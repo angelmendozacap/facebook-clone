@@ -2045,6 +2045,20 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -2062,6 +2076,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       } else {
         this.postMessage();
       }
+
+      this.$store.commit('Posts/posts/UPDATE_MESSAGE', '');
     }
   }),
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapGetters"])('Posts', ['postTextMessage']), {}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapGetters"])('User', ['authUser']), {
@@ -2082,6 +2098,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         acceptedFiles: 'image/*',
         clickable: '.dz-clickable',
         autoProcessQueue: false,
+        previewsContainer: '.dropzone-previews',
+        previewTemplate: document.getElementById('dz-template').innerHTML,
         params: {
           width: 1000,
           height: 1000
@@ -2093,7 +2111,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           'X-CSRF-TOKEN': document.head.querySelector('meta[name=csrf-token]').content
         },
         success: function success(e, res) {
-          alert('success');
+          _this.dropzone.removeAllFiles();
+
+          _this.$store.commit('Posts/posts/PUSH_POSTS', res);
         }
       };
     }
@@ -25579,10 +25599,43 @@ var render = function() {
           ]
         )
       ])
-    ])
+    ]),
+    _vm._v(" "),
+    _vm._m(0)
   ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "dropzone-previews" }, [
+      _c("div", { staticClass: "hidden", attrs: { id: "dz-template" } }, [
+        _c("div", { staticClass: "dz-preview dz-file-preview mt-4" }, [
+          _c("div", { staticClass: "dz-details" }, [
+            _c("img", {
+              staticClass: "w-32 h-32",
+              attrs: { "data-dz-thumbnail": "" }
+            }),
+            _vm._v(" "),
+            _c(
+              "button",
+              { staticClass: "text-xs", attrs: { "data-dz-remove": "" } },
+              [_vm._v("REMOVE")]
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "dz-progress" }, [
+            _c("span", {
+              staticClass: "dz-upload",
+              attrs: { "data-dz-upload": "" }
+            })
+          ])
+        ])
+      ])
+    ])
+  }
+]
 render._withStripped = true
 
 

@@ -37,6 +37,20 @@
         </button>
       </div>
     </div>
+
+    <div class="dropzone-previews">
+      <div id="dz-template" class="hidden">
+        <div class="dz-preview dz-file-preview mt-4">
+          <div class="dz-details">
+            <img data-dz-thumbnail class="w-32 h-32">
+
+            <button data-dz-remove class="text-xs">REMOVE</button>
+          </div>
+
+          <div class="dz-progress"><span class="dz-upload" data-dz-upload></span></div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -64,6 +78,7 @@ export default {
         this.postMessage()
       }
 
+      this.$store.commit('Posts/posts/UPDATE_MESSAGE', '')
     }
   },
 
@@ -87,6 +102,8 @@ export default {
         acceptedFiles: 'image/*',
         clickable: '.dz-clickable',
         autoProcessQueue: false,
+        previewsContainer: '.dropzone-previews',
+        previewTemplate: document.getElementById('dz-template').innerHTML,
         params: {
           width: 1000,
           height: 1000,
@@ -98,7 +115,9 @@ export default {
           'X-CSRF-TOKEN': document.head.querySelector('meta[name=csrf-token]').content
         },
         success: (e, res) => {
-          alert('success')
+          this.dropzone.removeAllFiles()
+
+          this.$store.commit('Posts/posts/PUSH_POSTS', res)
         }
       }
     }
