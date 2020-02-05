@@ -102,6 +102,7 @@ export default {
         acceptedFiles: 'image/*',
         clickable: '.dz-clickable',
         autoProcessQueue: false,
+        maxFiles: 1,
         previewsContainer: '.dropzone-previews',
         previewTemplate: document.getElementById('dz-template').innerHTML,
         params: {
@@ -118,6 +119,10 @@ export default {
           this.dropzone.removeAllFiles()
 
           this.$store.commit('Posts/posts/PUSH_POSTS', res)
+        },
+        maxfilesexceeded: (file) => {
+          this.dropzone.removeAllFiles()
+          this.dropzone.addFile(file)
         }
       }
     }
